@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="1228.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="View_Controller.CustomersController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="563.0" prefWidth="1228.0">
+         <children>
+            <Label text="Customers Database">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="456.0" prefWidth="866.0" spacing="20.0">
+               <children>
+                  <TableView fx:id="CustomerTable" onMouseClicked="#tableMouseClick" prefHeight="456.0" prefWidth="708.0">
+                    <columns>
+                      <TableColumn fx:id="CustomerIDColumn" prefWidth="75.0" text="Customer ID" />
+                      <TableColumn fx:id="NameColumn" prefWidth="160.0" text="Name" />
+                        <TableColumn fx:id="AddressColumn" prefWidth="142.0" text="Street Address" />
+                        <TableColumn fx:id="PhoneColumn" prefWidth="133.0" text="Phone Number" />
+                        <TableColumn fx:id="LastUpdateColumn" minWidth="5.0" prefWidth="117.0" text="Last Update By" />
+                        <TableColumn fx:id="ActiveColumn" prefWidth="78.0" text="Active (Y/N)" />
+                    </columns>
+                  </TableView>
+                  <VBox alignment="CENTER_LEFT" prefHeight="456.0" prefWidth="157.0" spacing="30.0">
+                     <children>
+                        <Button fx:id="EditSelectedButton" mnemonicParsing="false" onAction="#EditCustomerHandler" text="Edit Selected Customer" />
+                        <Button fx:id="DeleteSelectedButton" mnemonicParsing="false" onAction="#DeleteCustomerHandler" text="Delete Selected Customer" />
+                        <Button fx:id="NewCustomerButton" mnemonicParsing="false" onAction="#NewCustomerHandler" text="New Customer" />
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" top="20.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="TOP_RIGHT" prefHeight="456.0" prefWidth="278.0">
+                     <children>
+                        <Label text="Add or Update Customer">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <VBox prefHeight="272.0" prefWidth="324.0">
+                           <children>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label fx:id="CustomerIdLabel" text="Customer ID" />
+                                    <TextField fx:id="CustomerIDTextField" onAction="#CustomerIDTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Name" />
+                                    <TextField fx:id="NameTextField" onAction="#NameTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Street Address" />
+                                    <TextField fx:id="AddressTextField" onAction="#AddressTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                                 <children>
+                                    <Label text="City" />
+                                    <ChoiceBox fx:id="CityChoiceBox" prefWidth="150.0" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="106.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                                 <children>
+                                    <Label text="Country" />
+                                    <Label fx:id="CountryLabel" prefHeight="25.0" prefWidth="149.0" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Postal Code" />
+                                    <TextField fx:id="PostalTextField" onAction="#CustomerIDTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Ph. Number" />
+                                    <TextField fx:id="PhoneTextField" onAction="#PhoneTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Last Update By" />
+                                    <TextField fx:id="LastUpdateTextField" onAction="#LastUpdateTextFieldHandler" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <RadioButton fx:id="ActiveRadio" mnemonicParsing="false" onAction="#ActiveRadioHandler" text="Active" />
+                                    <RadioButton fx:id="InactiveRadio" mnemonicParsing="false" onAction="#InactiveRadioHandler" text="Inactive" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="SaveCustomerInput" mnemonicParsing="false" onAction="#SaveInputHandler" text="Save Form Input" />
+                              <Button fx:id="ClearCustomerButton" mnemonicParsing="false" onAction="#ClearCustomerHandler" text="Cancel Form Input" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="CustomerToMainButton" mnemonicParsing="false" onAction="#CustomerToMainHandler" text="Back To Main Menu" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

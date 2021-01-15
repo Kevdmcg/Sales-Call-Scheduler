@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="607.0" prefWidth="1190.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.AppointmentsController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="607.0" prefWidth="1190.0">
+         <children>
+            <Label alignment="CENTER" text="Appointments">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="554.0" prefWidth="1190.0" spacing="10.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="554.0" prefWidth="121.0" spacing="20.0">
+                     <children>
+                        <VBox prefHeight="128.0" prefWidth="121.0">
+                           <children>
+                              <Label alignment="BOTTOM_LEFT" prefHeight="48.0" prefWidth="119.0" text="Calendar View">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <RadioButton fx:id="ViewAllRadio" mnemonicParsing="false" onAction="#ViewAllRadioHandler" text="View All" />
+                              <RadioButton fx:id="MonthlyViewRadio" mnemonicParsing="false" onAction="#MonthlyViewRadioHandler" prefHeight="27.0" prefWidth="94.0" selected="true" text="Monthly View" />
+                              <RadioButton fx:id="WeeklyViewRadio" mnemonicParsing="false" onAction="#WeeklyViewRadioHandler" prefHeight="19.0" prefWidth="89.0" text="Weekly View" />
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </VBox>
+                        <Button fx:id="AddAppointmentButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#AddAppointmentHandler" text="New Appointment" />
+                        <Button fx:id="DeleteSelectedButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#DeleteSelectedHandler" prefWidth="112.0" text="Delete Selected" />
+                        <Button fx:id="EditSelectedButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#EditSelectedHandler" prefWidth="112.0" text="Edit Selected" />
+                        <Button fx:id="BackButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#BackButtonHandler" prefWidth="112.0" text="Back" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+                  <TableView fx:id="AppointmentsTableView" onMouseClicked="#appointmentMouseClick" prefHeight="522.0" prefWidth="699.0">
+                    <columns>
+                      <TableColumn fx:id="CustomerNameColumn" prefWidth="75.0" text="Customer" />
+                        <TableColumn fx:id="DateColumn" prefWidth="75.0" text="Date" />
+                        <TableColumn fx:id="StartTimeColumn" prefWidth="75.0" text="Start Time" />
+                        <TableColumn fx:id="EndTimeColumn" prefWidth="75.0" text="End Time" />
+                        <TableColumn fx:id="CreatedByColumn" prefWidth="101.0" text="Booked By" />
+                        <TableColumn fx:id="LocationColumn" prefWidth="140.0" text="Location" />
+                        <TableColumn fx:id="TypeColumn" prefWidth="182.0" text="Type" />
+                    </columns>
+                  </TableView>
+                  <VBox prefHeight="554.0" prefWidth="329.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="78.0" prefWidth="329.0" text="APPOINTMENT HOURS LIMITED TO 8:00 to 17:00 Mon thru Sat.  You cannot schedule Appointments to end after 17:00!" textAlignment="CENTER" wrapText="true" />
+                        <Label alignment="BOTTOM_CENTER" prefHeight="67.0" prefWidth="329.0" text="Update or Add Appointments">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <GridPane prefHeight="461.0" prefWidth="329.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="MeetingTitleTextField" promptText="Meeting Title" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="MeetingDescriptionTextField" promptText="Description" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ChoiceBox fx:id="MeetingTypeChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ChoiceBox fx:id="CompanyNameChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" />
+                              <DatePicker fx:id="MeetingDateCalendar" onAction="#MeetingDateCalendarHandler" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <ChoiceBox fx:id="StartTimeChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <ChoiceBox fx:id="DurationChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label prefHeight="38.0" prefWidth="169.0" text="Meeting Created By" GridPane.rowIndex="10" />
+                              <Label prefHeight="17.0" prefWidth="171.0" text="Last Updated" GridPane.rowIndex="11" />
+                              <TextField fx:id="UrlLabel" promptText="URL" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Meeting Title" GridPane.rowIndex="1" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Meeting Description" GridPane.rowIndex="2" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Meeting Type" GridPane.rowIndex="3" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Contact Name: " GridPane.rowIndex="4" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Branch Location" GridPane.rowIndex="5" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Start Time" GridPane.rowIndex="7" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Meeting Date" GridPane.rowIndex="6" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="End Time" GridPane.rowIndex="9" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Website" GridPane.rowIndex="12" />
+                              <Label fx:id="CreatedByLabel" prefHeight="35.0" prefWidth="164.0" text="Meeting Creator" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label fx:id="LastUpdatedLabel" prefHeight="35.0" prefWidth="164.0" text="Date of Last Update" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <Label prefHeight="35.0" prefWidth="164.0" text="Company Name" />
+                              <TextField fx:id="contactTextBox" promptText="Contact Name" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="BranchLocationLabel" prefHeight="29.0" prefWidth="167.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Label prefHeight="26.0" prefWidth="165.0" text="Duration" GridPane.rowIndex="8" />
+                              <Label fx:id="EndTimeLabel" prefHeight="26.0" prefWidth="165.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                           </children>
+                        </GridPane>
+                        <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="SaveAppointmentButton" mnemonicParsing="false" onAction="#SaveAppointmentButtonHandler" text="Save Appointment" />
+                              <Button fx:id="ClearFormButton" mnemonicParsing="false" onAction="#ClearFormButtonHandler" text="Clear Form" />
+                              <Button fx:id="CancelInputButton" mnemonicParsing="false" onAction="#CancelInputButtonHandler" text="Cancel Input" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+               <opaqueInsets>
+                  <Insets right="10.0" />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
