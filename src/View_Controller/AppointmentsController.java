@@ -128,9 +128,7 @@ public class AppointmentsController implements Initializable {
     @FXML
     private Label EndTimeLabel;
 
-    private final DateTimeFormatter datetimeDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final ZoneId localZoneID = ZoneId.systemDefault();
-    private final ZoneId utcZoneID = ZoneId.of("UTC");
+    
     private boolean isWeekly;
     private int isWeeklyInt;
     private boolean isMonthly;
@@ -145,9 +143,12 @@ public class AppointmentsController implements Initializable {
     ObservableList<String> typeList = FXCollections.observableArrayList();
     ObservableList<LocalTime> startList = FXCollections.observableArrayList();
     ObservableList<String> durationList = FXCollections.observableArrayList();
-    private final DateTimeFormatter timeDTF = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private final DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
+    private final DateTimeFormatter timeOnlyFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final DateTimeFormatter dateOnlyFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final ZoneId localTimeZoneId = ZoneId.systemDefault();
+    private final ZoneId utcTimeZoneId = ZoneId.of("UTC");
     
     // LAMBDA EXPRESSION USED BELOW FOR CLARITY AND CONCISE EXECUTION OF addListener
     private void branchListener() {
@@ -200,7 +201,7 @@ public class AppointmentsController implements Initializable {
                     Optional<ButtonType> result = alert.showAndWait();
                     DurationChoiceBox.setValue(null);
                 }
-                String endLabel = endTime1.format(timeDTF);
+                String endLabel = endTime1.format(timeOnlyFormat);
                 EndTimeLabel.setText(endLabel);
             }
         });
@@ -229,14 +230,14 @@ public class AppointmentsController implements Initializable {
             String startUTC = clickSet.getString("start").substring(0, 19);
             String endUTC = clickSet.getString("end").substring(0, 19);
 
-            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, datetimeDTF);
-            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, datetimeDTF);
+            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, dateTimeFormat);
+            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, dateTimeFormat);
 
-            ZonedDateTime localZoneStart = utcStartDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
-            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
+            ZonedDateTime localZoneStart = utcStartDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
+            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
 
-            String localStartDT = localZoneStart.format(datetimeDTF);
-            String localEndDT = localZoneEnd.format(datetimeDTF);
+            String localStartDT = localZoneStart.format(dateTimeFormat);
+            String localEndDT = localZoneEnd.format(dateTimeFormat);
             LocalTime timeChoiceBoxStart = LocalTime.parse(localStartDT.substring(11, 16));
             String timeChoiceBoxEnd = localEndDT.substring(11);
             StartTimeChoiceBox.setValue(timeChoiceBoxStart);
@@ -305,19 +306,19 @@ public class AppointmentsController implements Initializable {
             String startUTC = result.getString("start").substring(0, 19);
             String endUTC = result.getString("end").substring(0, 19);
 
-            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, datetimeDTF);
-            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, datetimeDTF);
+            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, dateTimeFormat);
+            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, dateTimeFormat);
 
-            ZonedDateTime localZoneStart = utcStartDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
-            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
+            ZonedDateTime localZoneStart = utcStartDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
+            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
 
-            String localStartDT = localZoneStart.format(datetimeDTF);
-            String localEndDT = localZoneEnd.format(datetimeDTF);
+            String localStartDT = localZoneStart.format(dateTimeFormat);
+            String localEndDT = localZoneEnd.format(dateTimeFormat);
             appointment.setStart(localStartDT.substring(11));
             appointment.setEnd(localEndDT.substring(11));
             appointment.setAppointmentDate(localStartDT.substring(0, 10));
 
-            String localDate = localZoneStart.format(date);
+            String localDate = localZoneStart.format(dateOnlyFormat);
 
             LocalDate updateCalendar = LocalDate.parse(localDate);
             MeetingDateCalendar.setValue(updateCalendar);
@@ -458,20 +459,20 @@ public class AppointmentsController implements Initializable {
         String localEndDTString = MeetingDateCalendar.getValue() + " " + EndTimeLabel.getText();
         String customerName = CompanyNameChoiceBox.getValue();
         LocalDate datePickerValue = MeetingDateCalendar.getValue();
-        LocalDateTime localStartTime = LocalDateTime.parse(localStartDTString, datetimeDTF);
-        LocalDateTime localEndTime = LocalDateTime.parse(localEndDTString, datetimeDTF);
-        ZonedDateTime startUTC = localStartTime.atZone(localZoneID).withZoneSameInstant(ZoneId.of("UTC"));
-        ZonedDateTime endUTC = localEndTime.atZone(localZoneID).withZoneSameInstant(ZoneId.of("UTC"));
+        LocalDateTime localStartTime = LocalDateTime.parse(localStartDTString, dateTimeFormat);
+        LocalDateTime localEndTime = LocalDateTime.parse(localEndDTString, dateTimeFormat);
+        ZonedDateTime startUTC = localStartTime.atZone(localTimeZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime endUTC = localEndTime.atZone(localTimeZoneId).withZoneSameInstant(ZoneId.of("UTC"));
         Timestamp sqlStartTS = Timestamp.valueOf(startUTC.toLocalDateTime());
         Timestamp sqlEndTS = Timestamp.valueOf(endUTC.toLocalDateTime());
-        if (checkConflict(sqlStartTS, sqlEndTS, User.getUserID())) {
+        if (checkConflict(sqlStartTS, sqlEndTS, User.getUserId())) {
             if (isNew) {
                 String insertAppointment = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end,"
                         + " createdBy, lastUpdateBy, createDate) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)"; //13
                 PreparedStatement psAppointment;
                 psAppointment = conn.prepareStatement(insertAppointment);
                 psAppointment.setInt(1, queryCustomerId(customerName));
-                psAppointment.setInt(2, User.getUserID());
+                psAppointment.setInt(2, User.getUserId());
                 psAppointment.setString(3, MeetingTitleTextField.getText());
                 psAppointment.setString(4, MeetingDescriptionTextField.getText());
                 psAppointment.setString(5, BranchLocationLabel.getText());
@@ -493,7 +494,7 @@ public class AppointmentsController implements Initializable {
                 PreparedStatement psAppointment;
                 psAppointment = conn.prepareStatement(updateAppointment);
                 psAppointment.setInt(1, queryCustomerId(customerName));
-                psAppointment.setInt(2, User.getUserID());
+                psAppointment.setInt(2, User.getUserId());
                 psAppointment.setString(3, MeetingTitleTextField.getText());
                 psAppointment.setString(4, MeetingDescriptionTextField.getText());
                 psAppointment.setString(5, BranchLocationLabel.getText());
@@ -527,7 +528,7 @@ public class AppointmentsController implements Initializable {
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentsWeek);
         filteredData.setPredicate(row -> {
             String truncateDate = row.getDateTime();
-            LocalDate rowDate = LocalDate.parse(truncateDate.substring(0, 19), datetimeDTF);
+            LocalDate rowDate = LocalDate.parse(truncateDate.substring(0, 19), dateTimeFormat);
             return rowDate.isAfter(now.minusDays(1)) && rowDate.isBefore(nowPlus1Week);
         });
         AppointmentsTableView.setItems(filteredData);
@@ -539,7 +540,7 @@ public class AppointmentsController implements Initializable {
         FilteredList<Appointment> filteredData = new FilteredList<>(appointmentsOL);
         filteredData.setPredicate(row -> {
             String truncateDate = row.getDateTime();
-            LocalDate rowDate = LocalDate.parse(truncateDate.substring(0, 19), datetimeDTF);
+            LocalDate rowDate = LocalDate.parse(truncateDate.substring(0, 19), dateTimeFormat);
             return rowDate.isAfter(now.minusDays(1)) && rowDate.isBefore(nowPlus1Month);
         });
 

@@ -128,7 +128,7 @@ public class CustomersController implements Initializable {
         result.beforeFirst();
         while (result.next()) {
             Customer cust = new Customer();
-            cust.setCustomerID(result.getInt("customerId"));
+            cust.setCustomerId(result.getInt("customerId"));
             cust.setCustomerName(result.getString("customerName"));
             cust.setCustomerAddress(result.getString("address"));
             cust.setCustomerPhone(result.getString("phone"));
@@ -445,7 +445,7 @@ public class CustomersController implements Initializable {
     @FXML
     private void tableMouseClick(MouseEvent event) throws SQLException, Exception {
         Customer cust = CustomerTable.getSelectionModel().getSelectedItem();
-        int idLookup = cust.getCustomerID();
+        int idLookup = cust.getCustomerId();
 
         makeQuery("SELECT * FROM customer, address, city, country WHERE customer.customerId = " + idLookup + " AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");
         ResultSet clickSet = getResult();
@@ -529,7 +529,7 @@ public class CustomersController implements Initializable {
         ObservableList<Customer> custClear = FXCollections.observableArrayList();
         Customer cust = CustomerTable.getSelectionModel().getSelectedItem();
         PreparedStatement delPull;
-        int idLookup = cust.getCustomerID();
+        int idLookup = cust.getCustomerId();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm");
         alert.setHeaderText("Confirm Delete");

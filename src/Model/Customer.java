@@ -18,7 +18,7 @@ import java.util.Calendar;
 // must require name, address, phone number (?)(from address table)
 public class Customer {
 
-    private int customerID; //Auto incremented in database
+    private int customerId; //Auto incremented in database
     private String customerName;
     private int active;
     private Date createDate;
@@ -39,8 +39,8 @@ public class Customer {
 
     }
 
-    public Customer(int customerID, String customerName, int active, String address, String address2, String city, String postalCode, String phone, String country, Date lastUpdate, String lastUpdateBy) {
-        setCustomerID(customerID);
+    public Customer(int customerId, String customerName, int active, String address, String address2, String city, String postalCode, String phone, String country, Date lastUpdate, String lastUpdateBy) {
+        setCustomerId(customerId);
         setCustomerName(customerName);
         setCustomerActive(active);
         setCustomerAddress(address);
@@ -54,12 +54,12 @@ public class Customer {
 
     }
 
-    public Customer(int customerid, String customerName, int addressId, int active, String createDate, String lastUpdate, String lastUpdateby, Calendar createDateCalendar, Calendar lastUpdateCalendar) {
+    public Customer(int customerId, String customerName, int addressId, int active, String createDate, String lastUpdate, String lastUpdateby, Calendar createDateCalendar, Calendar lastUpdateCalendar) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Customer(int customerId, String customerName) {
-        setCustomerID(customerID);
+        setCustomerId(this.customerId);
         setCustomerName(customerName);
     }
 
@@ -68,8 +68,8 @@ public class Customer {
     }
 
     //getters
-    public int getCustomerID() {
-        return customerID;
+    public int getCustomerId() {
+        return customerId;
     }
 
     public String getCustomerName() {
@@ -117,9 +117,9 @@ public class Customer {
     }
 
     //setters
-    public void setCustomerID(int customerID) {
+    public void setCustomerId(int customerId) {
 
-        this.customerID = customerID;
+        this.customerId = customerId;
     }
 
     public void setCustomerName(String customerName) {

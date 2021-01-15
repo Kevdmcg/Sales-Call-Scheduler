@@ -94,15 +94,15 @@ public class LoginController implements Initializable {
         ResourceBundle rbt = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
         String usernameInput = userNameTextField.getText();
         String passwordInput = passwordTextField.getText();
-        int userID = getUserID(usernameInput);
+        int userID = getUserId(usernameInput);
         Parent root;
         Stage stage;
         User user = new User();
 
-        if (isValidPassword(userID, passwordInput)) {
-            User.setUserID(userID);
+        if (passwordCheck(userID, passwordInput)) {
+            User.setUserId(userID);
             User.setUsername(usernameInput);
-            loginLog(user.getUsername());
+            activityLog(user.getUsername());
             if (alertCheck(userID)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("IMMINENT APPOINTMENT");
@@ -126,7 +126,7 @@ public class LoginController implements Initializable {
         }
     }
 
-    private boolean isValidPassword(int userID, String password) throws SQLException {
+    private boolean passwordCheck(int userID, String password) throws SQLException {
         Statement statement = DBConnection.conn.createStatement();
         String sqlStatement = "SELECT password FROM user WHERE userId ='" + userID + "'";
         ResultSet result = statement.executeQuery(sqlStatement);
@@ -138,15 +138,15 @@ public class LoginController implements Initializable {
         return false;
     }
 
-    private int getUserID(String username) throws SQLException {
-        int userID = -1;
+    private int getUserId(String username) throws SQLException {
+        int userId = -1;
         Statement statement = DBConnection.conn.createStatement();
         String sqlStatement = "SELECT userID FROM user WHERE userName ='" + username + "'";
         ResultSet result = statement.executeQuery(sqlStatement);
         while (result.next()) {
-            userID = result.getInt("userId");
+            userId = result.getInt("userId");
         }
-        return userID;
+        return userId;
     }
 
     public static java.sql.Timestamp getTimeStamp() {
@@ -156,9 +156,9 @@ public class LoginController implements Initializable {
         return timeStamp;
     }
 
-    public void loginLog(String user) {
+    public void activityLog(String user) {
         try {
-            String fileName = "loginLog";
+            String fileName = "activityLog";
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
             writer.append(getTimeStamp() + " " + user + " " + "\n");
             writer.flush();

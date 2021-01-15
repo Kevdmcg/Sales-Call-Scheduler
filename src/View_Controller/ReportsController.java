@@ -55,9 +55,9 @@ public class ReportsController implements Initializable {
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
     ObservableList<String> companyList = FXCollections.observableArrayList();
     ObservableList<Integer> monthlyCount = FXCollections.observableArrayList();
-    private final DateTimeFormatter datetimeDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final ZoneId localZoneID = ZoneId.systemDefault();
-    private final ZoneId utcZoneID = ZoneId.of("UTC");
+    private final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final ZoneId localTimeZoneId = ZoneId.systemDefault();
+    private final ZoneId utcTimeZoneId = ZoneId.of("UTC");
 
     Parent root;
     Stage stage;
@@ -194,14 +194,14 @@ public class ReportsController implements Initializable {
             String startUTC = result.getString("start").substring(0, 19);
             String endUTC = result.getString("end").substring(0, 19);
 
-            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, datetimeDTF);
-            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, datetimeDTF);
+            LocalDateTime utcStartDT = LocalDateTime.parse(startUTC, dateTimeFormat);
+            LocalDateTime utcEndDT = LocalDateTime.parse(endUTC, dateTimeFormat);
 
-            ZonedDateTime localZoneStart = utcStartDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
-            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcZoneID).withZoneSameInstant(localZoneID);
+            ZonedDateTime localZoneStart = utcStartDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
+            ZonedDateTime localZoneEnd = utcEndDT.atZone(utcTimeZoneId).withZoneSameInstant(localTimeZoneId);
 
-            String localStartDT = localZoneStart.format(datetimeDTF);
-            String localEndDT = localZoneEnd.format(datetimeDTF);
+            String localStartDT = localZoneStart.format(dateTimeFormat);
+            String localEndDT = localZoneEnd.format(dateTimeFormat);
             appointment.setStart(localStartDT);
             appointment.setEnd(localEndDT);
             appointmentList.addAll(appointment);

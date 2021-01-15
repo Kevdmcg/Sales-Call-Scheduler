@@ -13,27 +13,27 @@ package Model;
 // userId (int) , userName , password , active (tinyint(4)) , createDate , createdBy , lastUpdate , lastUpdatedBy
 public class User {
 
-    private static int userID; //auto incremented in database
+    private static int userId; //auto incremented in database
     private static String username;
     private static String password;
 
     public User() {
-        userID = 0;
+        userId = 0;
         username = null;
         password = null;
 
     }
 
     //constructor
-    public User(int userID, String username, String password) {
-        this.userID = userID;
+    public User(int userId, String username, String password) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
     }
 
     //getters
-    public static int getUserID() {
-        return userID;
+    public static int getUserId() {
+        return userId;
     }
 
     public static String getUsername() {
@@ -49,8 +49,8 @@ public class User {
     }
 
     //setters
-    public static void setUserID(int userID) {
-        User.userID = userID;
+    public static void setUserId(int userId) {
+        User.userId = userId;
     }
 
     public static void setUsername(String username) {
