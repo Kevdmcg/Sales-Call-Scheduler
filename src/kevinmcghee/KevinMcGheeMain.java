@@ -30,11 +30,6 @@ public class KevinMcGheeMain extends Application {
     // loads Login screen on program start
     @Override
     public void start(Stage stage) throws Exception {
-        //ResourceBundle rb = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
-        //System.out.println("rb.getString inside start " + rb.getString("loginTitle"));
-        //System.out.println("RB loaded");
-        //ResourceBundle rb = ResourceBundle.getBundle("login_lang.login", Locale.getDefault());
-        //ResourceBundle rb = ResourceBundle.getBundle("login_lang/login");
         Parent root = FXMLLoader.load(getClass().getResource("/View_Controller/Login.fxml"));
         
         
@@ -42,8 +37,6 @@ public class KevinMcGheeMain extends Application {
         
         stage.setScene(scene);
         stage.show();
-        
-        System.out.println("Login Screen Loaded");
     }
 
     /**
@@ -51,16 +44,11 @@ public class KevinMcGheeMain extends Application {
      */
     public static void main(String[] args) {
         ResourceBundle rb = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
-        System.out.println("rb.getString inside main " + rb.getString("loginTitle"));
-        System.out.println("RB loaded");
         
-        Connection con = DBConnection.makeConnection(); // Connect to database
-        System.out.println("Connection Started in Main");
-        
+        Connection con = DBConnection.makeConnection();        
         
         launch(args);
         DBConnection.closeConnections();
-        System.out.println("Connection Closed");
     }
     
 }

@@ -8,6 +8,7 @@ package Model;
 //  Needed to fill city table of db
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 // columns:  cityId (int) (auto),city (varchar) , countryId (int) (foreign key) , createDate (datetime) , createdBy (varchar) , lastUpdate (timestamp)
 // lastUpdatedBy (varchar)

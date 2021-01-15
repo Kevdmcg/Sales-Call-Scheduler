@@ -50,11 +50,9 @@ import static util.Query.makeQuery;
  */
 public class LoginController implements Initializable {
 
-   
+    ResourceBundle rb;
     @FXML
     private Button LoginButton;
-    
-    ResourceBundle rb;
     @FXML
     private TextField userNameTextField;
     @FXML
@@ -67,30 +65,14 @@ public class LoginController implements Initializable {
         Instant utcStamp = Instant.now();
         long minutes = 15;
         Instant instantFifteen = utcStamp.plus(minutes, ChronoUnit.MINUTES);
-        //long now = Instant.now();
-        //Timestamp instantToTime = Timestamp.from(utcStamp);
-        //Timestamp plusFifteen = instantToTime.setTime(instantToTime.getTime() + TimeUnit.MINUTES.toMillis(15));
-        
-        System.out.println("alert check started");
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15));
-        System.out.println(utcStamp);
-        System.out.println(instantFifteen);
-        //LocalDateTime ldt = timeStamp.toLocalDateTime();
-        //ZonedDateTime zdt = zdt.withZoneSameInstant(ZoneId.of("GMT"));
-        //Timestamp ztime = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15)).valueOf(zdt.toLocalDateTime());
-        //System.out.println("ztime :" +ztime);
-        
-        //ZonedDateTime startUTC = timeStamp.atZone(localZoneID).withZoneSameInstant(ZoneId.of("UTC"));
-        //Timestamp sqlStartTS = startUTC.valueOf(timeStamp.toLocalDateTime());
         makeQuery("SELECT count(*) FROM appointment WHERE userId = "+ userId +" and start between CURRENT_TIMESTAMP and '"+instantFifteen+"'");
         ResultSet alertSet = getResult();
         alertSet.first();
         int alertInt = alertSet.getInt("count(*)");
         if (alertInt == 0){
-            System.out.println("alertInt was zero");
             return false;
         } else {
-            System.out.println("alertInt was not zero");
             return true;
         }
     }
@@ -100,14 +82,7 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         ResourceBundle rbt = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
-        //this.rb = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
-        //this.rb = rb;
-        System.out.println(rbt);
-        System.out.println("rbt.getString inside loginController " + rbt.getString("loginTitle"));
-        System.out.println(Locale.getDefault() + " local default read");
-        System.out.println("rbt.getString " + rbt.getString("loginTitle"));
         LoginTitleLabel.setText(rbt.getString("loginTitle"));
         userNameTextField.setText(rbt.getString("userName"));
         passwordTextField.setText(rbt.getString("password"));
@@ -126,7 +101,6 @@ public class LoginController implements Initializable {
     @FXML
     private void LoginButtonHandler(ActionEvent event) throws IOException, SQLException {
         ResourceBundle rbt = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
-        System.out.println(userNameTextField.getText());
         String usernameInput = userNameTextField.getText();
         String passwordInput = passwordTextField.getText();
         int userID = getUserID(usernameInput);
@@ -137,15 +111,6 @@ public class LoginController implements Initializable {
         if (isValidPassword(userID, passwordInput)) {
             User.setUserID(userID);
             User.setUsername(usernameInput);
-
-            //prints entered fields to terminal for troubleshooting
-            //System.out.println("User ID: " + user.getUserID());
-            //System.out.println("Username: " + user.getUsername());
-            
-            //calls method to write current user to the log
-            
-
-            //calls mainscreen scene after successful login
             loginLog(user.getUsername());
             if (alertCheck(userID)){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -171,16 +136,9 @@ public class LoginController implements Initializable {
     }
     
     private boolean isValidPassword(int userID, String password) throws SQLException {
-
-        //create statement object
         Statement statement = DBConnection.conn.createStatement();
-
-        //write SQL statement
         String sqlStatement = "SELECT password FROM user WHERE userId ='" + userID + "'";;
-
-        //create resultset object
         ResultSet result = statement.executeQuery(sqlStatement);
-
         while (result.next()) {
             if (result.getString("password").equals(password)) {
                 return true;
@@ -191,16 +149,9 @@ public class LoginController implements Initializable {
     
     private int getUserID(String username) throws SQLException {
         int userID = -1;
-
-        //create statement object
         Statement statement = DBConnection.conn.createStatement();
-
-        //write SQL statement
         String sqlStatement = "SELECT userID FROM user WHERE userName ='" + username + "'";
-
-        //create resultset object
         ResultSet result = statement.executeQuery(sqlStatement);
-
         while (result.next()) {
             userID = result.getInt("userId");
         }
@@ -212,23 +163,16 @@ public class LoginController implements Initializable {
         java.sql.Timestamp timeStamp = Timestamp.valueOf(localDateTime);
         return timeStamp;
     }
-    
-    public static java.sql.Date getDate() {
-        java.sql.Date date = java.sql.Date.valueOf(LocalDate.now());
-        return date;
-    }
-    
+        
     public void loginLog(String user) {
         try {
             String fileName = "loginLog";
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
             writer.append(getTimeStamp() + " " + user + " " + "\n");
-            System.out.println("New login recorded in log file.");
             writer.flush();
             writer.close();
         } catch (IOException e) {
             System.out.println(e);
         }
-    }
-    
+    }    
 }

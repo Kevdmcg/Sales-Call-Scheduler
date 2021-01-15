@@ -9,6 +9,7 @@ package Model;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 // table fields are: appointmentId (INT)(auto) (primary) , customerId (INT) , userId (INT), title (varchar) , description (txt), location (txt), contact (txt) , type (txt)
 // , url (varchar), start (datetime), end (datetime), createdDate (varchar), createdBy (varchar)

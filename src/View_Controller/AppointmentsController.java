@@ -188,7 +188,6 @@ public class AppointmentsController implements Initializable {
             public void changed(ObservableValue ov, LocalTime value, LocalTime new_value){
                   if (StartTimeChoiceBox != null && new_value != null) {
                       LocalTime startTime = new_value;
-                      //System.out.println("startTime = " + startTime);
                     }
                 }
         });
@@ -224,23 +223,14 @@ public class AppointmentsController implements Initializable {
     
     @FXML
     private void appointmentMouseClick(MouseEvent event) throws SQLException, Exception {
-        System.out.println();
-        System.out.println("++++ appointmentMouseClick routine++++");
-       // System.out.println("tableMouseClick activated");
-        
         Appointment appointment = AppointmentsTableView.getSelectionModel().getSelectedItem();
-        int idLookup = appointment.getAppointmentId();
-        //LocalTime formStart = appointment.getStart();
-        
+        int idLookup = appointment.getAppointmentId();        
         makeQuery("SELECT * FROM appointment, customer WHERE appointment.appointmentId = " + idLookup + " AND customer.customerId = appointment.customerId ");
-        ResultSet clickSet = getResult();
-        
-        
+        ResultSet clickSet = getResult();        
         ResultSetMetaData clickmeta = clickSet.getMetaData();
         int columnsNumber = clickmeta.getColumnCount();
         
-        while (clickSet.next()) {
-            
+        while (clickSet.next()) {            
             CompanyNameChoiceBox.setValue(clickSet.getString("customerName"));
             MeetingTitleTextField.setText(clickSet.getString("title"));            
             MeetingDescriptionTextField.setText(clickSet.getString("description"));
@@ -265,8 +255,7 @@ public class AppointmentsController implements Initializable {
             LocalTime timeChoiceBoxStart = LocalTime.parse(localStartDT.substring(11,16));
             String timeChoiceBoxEnd = localEndDT.substring(11);
             StartTimeChoiceBox.setValue(timeChoiceBoxStart);
-            EndTimeLabel.setText(timeChoiceBoxEnd);
-            
+            EndTimeLabel.setText(timeChoiceBoxEnd);            
             
             Duration duration = Duration.between(utcStartDT, utcEndDT);
             Duration d = Duration.between(LocalTime.parse(appointment.getStart()), LocalTime.parse(appointment.getEnd()));
@@ -469,18 +458,7 @@ public class AppointmentsController implements Initializable {
     
     private boolean checkConflict(Timestamp start, Timestamp end, int userId) throws SQLException {
         makeQuery("SELECT count(*) FROM appointment WHERE userID= '"+userId+"' and start between '"+start+"' and '"+end+"'");
-        System.out.println("Query Made");
         ResultSet conflict = getResult();
-        ResultSetMetaData rsmd = conflict.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
-        while (conflict.next()) {
-            for (int i = 1; i <= columnsNumber; i++) {
-            if (i > 1) System.out.print(",  ");
-            String columnValue = conflict.getString(i);
-            System.out.print(columnValue + " " + rsmd.getColumnName(i));
-            }   
-        }
-           
         conflict.first();
         int conflictInt = conflict.getInt("count(*)");
         if (conflictInt > 0){
@@ -533,11 +511,7 @@ public class AppointmentsController implements Initializable {
                 return true;
 
             } else {
-                System.out.println();
-                System.out.println("++++ Save Updated Subroutine++++");
-                System.out.println();
                 Appointment appt = AppointmentsTableView.getSelectionModel().getSelectedItem();
-                System.out.println("idlookup : " + appt.getAppointmentId());
                 int idlookup = appt.getAppointmentId();
                 String updateAppointment = "UPDATE appointment SET customerId = ?, userId = ?, title = ?, description = ?, location = ?,"
                         + " contact = ?, type = ?, url = ?, start = ?, end = ?, lastUpdateBy = ? WHERE appointmentId = ?";
@@ -860,8 +834,7 @@ public class AppointmentsController implements Initializable {
                 updateAppointmentsTableView();
                 AppointmentsTableView.setDisable(false);
                 disableAppointmentForm();
-                wipeAppointmentForm();
-                System.out.println();                
+                wipeAppointmentForm();              
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
