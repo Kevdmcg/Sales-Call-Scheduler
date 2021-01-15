@@ -11,14 +11,12 @@ import com.mysql.jdbc.PreparedStatement;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javafx.beans.binding.Bindings.select;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -36,11 +34,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -49,15 +45,12 @@ import static util.DBConnection.conn;
 import static util.Query.getResult;
 import static util.Query.makeQuery;
 
-
 /**
  * FXML Controller class
  *
  * @author kmcgh15
  */
 public class CustomersController implements Initializable {
-    
-    
 
     //<editor-fold defaultstate="collapsed" desc="FXML fxids">
     @FXML
@@ -94,7 +87,7 @@ public class CustomersController implements Initializable {
     @FXML
     private Button CustomerToMainButton;
     private MenuButton CityMenuButton;
-    
+
     @FXML
     private TextField PostalTextField;
     @FXML
@@ -113,29 +106,23 @@ public class CustomersController implements Initializable {
     //private ChoiceBox<String> CountryChoiceBox;
     @FXML
     private Label CountryLabel;
-    
-    
+
 //</editor-fold>
-    
     Parent root;
-    Stage stage;     
-    
+    Stage stage;
+
     private boolean isActive;
     private int activeInt;
-    private int customerId;   
+    private int customerId;
 
     ObservableList<Customer> customerList = FXCollections.observableArrayList();
     ObservableList<String> cityList = FXCollections.observableArrayList();
     ObservableList<String> countryList = FXCollections.observableArrayList();
-    
-    
-    
 
-    
     public void updateCustomerTableView() throws SQLException {
         customerList.clear();
         Statement stmt = DBConnection.conn.createStatement();
-        
+
         String sqlStatement = "SELECT customerId, customerName, phone, address, active, customer.lastUpdateBy FROM customer, address WHERE customer.addressId = address.addressId  ORDER BY customer.customerName";
         ResultSet result = stmt.executeQuery(sqlStatement);
         result.beforeFirst();
@@ -150,13 +137,13 @@ public class CustomersController implements Initializable {
             cust.setActiveString(result.getString("active"));
             customerList.addAll(cust);
         }
-        CustomerTable.setItems(customerList); 
+        CustomerTable.setItems(customerList);
     } // FINISHED
-    
-    private void fillCityChoiceBox() throws SQLException, Exception {        
+
+    private void fillCityChoiceBox() throws SQLException, Exception {
         PreparedStatement selectCity;
-        selectCity =(PreparedStatement) conn.prepareStatement("SELECT city FROM city");
-        ResultSet cities = selectCity.executeQuery();        
+        selectCity = (PreparedStatement) conn.prepareStatement("SELECT city FROM city");
+        ResultSet cities = selectCity.executeQuery();
         while (cities.next()) {
             Customer cust = new Customer();
             cust.setCustomerCity(cities.getString("city"));
@@ -166,40 +153,40 @@ public class CustomersController implements Initializable {
         selectCity.close();
         cities.close();
     } // FINISHED
-    
+
     private int getCityID(String city) throws SQLException, Exception {
-        int cityID = -1;        
+        int cityID = -1;
         makeQuery("SELECT cityId FROM city WHERE city.city = '" + city + "'");
-        ResultSet rs = getResult();        
+        ResultSet rs = getResult();
         while (rs.next()) {
-            cityID = rs.getInt("cityId");                
+            cityID = rs.getInt("cityId");
         }
         return cityID;
     }
-    
+
     private int getCountryId(String country) throws SQLException, Exception {
         int countryId = -1;
-        
+
         makeQuery("SELECT countryId FROM country WHERE country.country = '" + country + "'");
         ResultSet rs = getResult();
-        
+
         while (rs.next()) {
-            countryId = rs.getInt("countryId");                
+            countryId = rs.getInt("countryId");
         }
         return countryId;
     }
-    
+
     private String getCountry(int countryId) throws SQLException {
-        String country = "repair";        
+        String country = "repair";
         makeQuery("SELECT country FROM country WHERE countryId = '" + countryId + "'");
-        ResultSet rs = getResult();        
+        ResultSet rs = getResult();
         while (rs.next()) {
-            country = rs.getString("country");                
-        }        
+            country = rs.getString("country");
+        }
         return country;
     }
-            
-    private void disableCustomerForm(){
+
+    private void disableCustomerForm() {
         ActiveRadio.setDisable(true);
         InactiveRadio.setDisable(true);
         CustomerIDTextField.setDisable(true);
@@ -213,7 +200,7 @@ public class CustomersController implements Initializable {
         DeleteSelectedButton.setDisable(true);
         SaveCustomerInput.setDisable(true);
     } // FINISHED
-    
+
     private void enableCustomerForm() {
         ActiveRadio.setDisable(false);
         InactiveRadio.setDisable(false);
@@ -224,11 +211,11 @@ public class CustomersController implements Initializable {
         PostalTextField.setDisable(false);
         PhoneTextField.setDisable(false);
         SaveCustomerInput.setDisable(false);
-        
+
     } // FINISHED
-    
+
     private void wipeCustomerForm() {
-        
+
         LastUpdateTextField.setText("");
         PhoneTextField.setText("");
         PostalTextField.setText("");
@@ -239,10 +226,10 @@ public class CustomersController implements Initializable {
         InactiveRadio.setSelected(false);
         CityChoiceBox.valueProperty().set(null);
         //CountryLabel.setText("");
-        
+
     } // FINISHED 
-    
-    private boolean validateBeforeSave () {
+
+    private boolean validateBeforeSave() {
         String saveName = NameTextField.getText();
         String saveAddress = AddressTextField.getText();
         String savePostal = PostalTextField.getText();
@@ -251,7 +238,7 @@ public class CustomersController implements Initializable {
         String countrySave = CountryLabel.getText();
         boolean saveActive = ActiveRadio.isSelected();
         boolean saveInactive = InactiveRadio.isSelected();
-        
+
         if (saveName == null || saveName.length() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
@@ -279,7 +266,7 @@ public class CustomersController implements Initializable {
 
             return false;
         }
-        if (citySave == null ) {
+        if (citySave == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText("Correct Missing Information");
@@ -315,10 +302,10 @@ public class CustomersController implements Initializable {
 
             return false;
         }
-        
+
         return true;
     } // FINISHED 
-    
+
     private boolean saveToDatabase() throws SQLException, Exception {
         String idString = CustomerIDTextField.getText();
         String nameSave = NameTextField.getText();
@@ -329,11 +316,11 @@ public class CustomersController implements Initializable {
         String phoneSave = PhoneTextField.getText();
         String lastUpdateBySave = User.getUsername();
         int cityIdSave = getCityID(CityChoiceBox.getValue());
-        int countryIdSave = getCountryId(CountryLabel.getText());        
-        if (idString == null || idString.length() == 0){
+        int countryIdSave = getCountryId(CountryLabel.getText());
+        if (idString == null || idString.length() == 0) {
             String insertAddress = "INSERT INTO address(address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdateBy) VALUES(?, 'N/A', ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
             PreparedStatement psAddress;
-            psAddress =(PreparedStatement) conn.prepareStatement(insertAddress);
+            psAddress = (PreparedStatement) conn.prepareStatement(insertAddress);
             psAddress.setString(1, addressSave);
             psAddress.setInt(2, cityIdSave);
             psAddress.setString(3, postalSave);
@@ -341,18 +328,17 @@ public class CustomersController implements Initializable {
             psAddress.setString(5, lastUpdateBySave);
             psAddress.setString(6, lastUpdateBySave);
             int rs = psAddress.executeUpdate();
-            
-            
-            String newAddressSelect = "SELECT addressId FROM address WHERE address.address = '" + addressSave +"'";
+
+            String newAddressSelect = "SELECT addressId FROM address WHERE address.address = '" + addressSave + "'";
             PreparedStatement newAddressPs;
-            newAddressPs =(PreparedStatement) conn.prepareStatement(newAddressSelect);            
+            newAddressPs = (PreparedStatement) conn.prepareStatement(newAddressSelect);
             ResultSet newAddressRs = newAddressPs.executeQuery();
             newAddressRs.beforeFirst();
             newAddressRs.next();
             int newAddressId = newAddressRs.getInt("addressId");
             String insertCustomer = "INSERT INTO customer(customerName, addressId, active, createDate, createdBy, lastUpdateBy) VALUES(?, ?, ?, CURRENT_TIMESTAMP, ?, ?)";
             PreparedStatement psCustomer;
-            psCustomer =(PreparedStatement) conn.prepareStatement(insertCustomer);
+            psCustomer = (PreparedStatement) conn.prepareStatement(insertCustomer);
             psCustomer.setString(1, nameSave);
             psCustomer.setInt(2, newAddressId);
             psCustomer.setInt(3, activeInt);
@@ -363,7 +349,7 @@ public class CustomersController implements Initializable {
             String updateAddress = "UPDATE address, customer, city, country "
                     + "SET address = ?, address2 = 'N/A', address.cityId = ?, postalCode = ?, phone = ?, address.lastUpdate = CURRENT_TIMESTAMP, address.lastUpdateBy = ? "
                     + "WHERE customer.customerId = ? AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId";
-            
+
             PreparedStatement psUpdateAddress = (PreparedStatement) conn.prepareStatement(updateAddress);
             psUpdateAddress.setString(1, addressSave);
             psUpdateAddress.setInt(2, getCityID(CityChoiceBox.getValue()));
@@ -372,58 +358,58 @@ public class CustomersController implements Initializable {
             psUpdateAddress.setString(5, lastUpdateBySave);
             psUpdateAddress.setString(6, idString);
             int result = psUpdateAddress.executeUpdate();
-            
+
             String updateStatement = "UPDATE customer, address, city , country SET customerName = ?, customer.active = ?, customer.lastUpdate = CURRENT_TIMESTAMP,  customer.lastUpdateBy = ? "
                     + "WHERE customer.customerId = ? AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId";
-            PreparedStatement psUpdateCustomer =(PreparedStatement) conn.prepareStatement(updateStatement); 
+            PreparedStatement psUpdateCustomer = (PreparedStatement) conn.prepareStatement(updateStatement);
             psUpdateCustomer.setString(1, nameSave);
-            psUpdateCustomer.setInt(2, activeInt);            
+            psUpdateCustomer.setInt(2, activeInt);
             psUpdateCustomer.setString(3, lastUpdateBySave);
             psUpdateCustomer.setString(4, idString);
-            int rsUC = psUpdateCustomer.executeUpdate();            
-        }        
+            int rsUC = psUpdateCustomer.executeUpdate();
+        }
         return true;
     }
-    
-    private String fillCountryLabel(String city) throws SQLException, Exception {        
-        if ( city != null){        
-        String fillCountry = "SELECT countryId FROM city WHERE city.cityId = " + getCityID(city);
+
+    private String fillCountryLabel(String city) throws SQLException, Exception {
+        if (city != null) {
+            String fillCountry = "SELECT countryId FROM city WHERE city.cityId = " + getCityID(city);
             PreparedStatement ps;
-            ps =(PreparedStatement) conn.prepareStatement(fillCountry);            
+            ps = (PreparedStatement) conn.prepareStatement(fillCountry);
             ResultSet rs = ps.executeQuery();
             rs.beforeFirst();
             rs.next();
             String newFillCountry = getCountry(rs.getInt("countryId"));
             CountryLabel.setText(newFillCountry);
-            return newFillCountry;            
+            return newFillCountry;
         } else {
             String newFillCountry = "Pending";
             CountryLabel.setText(newFillCountry);
             return newFillCountry;
         }
-    }    
-    
+    }
+
     private void startListener() {
-    CityChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-          @Override
-          public void changed(ObservableValue ov, String value, String new_value) 
-            {
-              if (CityChoiceBox != null && new_value != null) {
-                  String kd = new_value;
-              try { 
-                  CountryLabel.setText(fillCountryLabel(CityChoiceBox.getValue()));
-              } catch (Exception ex) {
-                  Logger.getLogger(CustomersController.class.getName()).log(Level.SEVERE, null, ex);
-              }}
-            }  
-        }); 
+        CityChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String value, String new_value) {
+                if (CityChoiceBox != null && new_value != null) {
+                    String kd = new_value;
+                    try {
+                        CountryLabel.setText(fillCountryLabel(CityChoiceBox.getValue()));
+                    } catch (Exception ex) {
+                        Logger.getLogger(CustomersController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
     }
 
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {        
+    public void initialize(URL url, ResourceBundle rb) {
         PropertyValueFactory<Customer, String> custNameFactory = new PropertyValueFactory<>("CustomerName");
         PropertyValueFactory<Customer, String> custAddressFactory = new PropertyValueFactory<>("CustomerAddress");
         PropertyValueFactory<Customer, String> custPhoneFactory = new PropertyValueFactory<>("CustomerPhone"); //String value "CustomerPhone" calls getCustomerPhone method
@@ -434,18 +420,18 @@ public class CustomersController implements Initializable {
         NameColumn.setCellValueFactory(custNameFactory);
         AddressColumn.setCellValueFactory(custAddressFactory);
         PhoneColumn.setCellValueFactory(custPhoneFactory);
-        LastUpdateColumn.setCellValueFactory(custLastUpdateBy);        
+        LastUpdateColumn.setCellValueFactory(custLastUpdateBy);
         ActiveColumn.setCellValueFactory(custActiveFactory);
         CustomerIDTextField.setText("Auto Generated");
         CustomerIDTextField.setDisable(true);
         LastUpdateTextField.setDisable(true);
-        LastUpdateTextField.setText("Auto Generated");        
-        
+        LastUpdateTextField.setText("Auto Generated");
+
         try {
             updateCustomerTableView();
         } catch (SQLException ex) {
             Logger.getLogger(CustomersController.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
         disableCustomerForm();
         try {
             fillCityChoiceBox();
@@ -453,16 +439,16 @@ public class CustomersController implements Initializable {
             Logger.getLogger(CustomersController.class.getName()).log(Level.SEVERE, null, ex);
         }
         startListener();
-        wipeCustomerForm();   
+        wipeCustomerForm();
     }
-    
+
     @FXML
-    private void tableMouseClick(MouseEvent event) throws SQLException, Exception {        
+    private void tableMouseClick(MouseEvent event) throws SQLException, Exception {
         Customer cust = CustomerTable.getSelectionModel().getSelectedItem();
         int idLookup = cust.getCustomerID();
-        
+
         makeQuery("SELECT * FROM customer, address, city, country WHERE customer.customerId = " + idLookup + " AND customer.addressId = address.addressId AND address.cityId = city.cityId AND city.countryId = country.countryId");
-        ResultSet clickSet = getResult();        
+        ResultSet clickSet = getResult();
         while (clickSet.next()) {
             PostalTextField.setText(clickSet.getString("postalCode"));
             CityChoiceBox.setValue(clickSet.getString("city"));
@@ -479,15 +465,15 @@ public class CustomersController implements Initializable {
                 ActiveRadio.setSelected(true);
                 InactiveRadio.setSelected(false);
             }
-            
+
         }
         EditSelectedButton.setDisable(false);
-        DeleteSelectedButton.setDisable(false);   
+        DeleteSelectedButton.setDisable(false);
     } //FINISHED
-    
+
     @FXML
     private void CustomerIDTextFieldHandler(ActionEvent event) {
-        
+
     }
 
     @FXML
@@ -523,19 +509,19 @@ public class CustomersController implements Initializable {
     @FXML
     private void ClearCustomerHandler(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm");
-            alert.setHeaderText("Confirm Clear");
-            alert.setContentText("Are you sure you want to Clear Form?");
-            Optional<ButtonType> result = alert.showAndWait();
-            
-            if (result.get() == ButtonType.OK) {                
+        alert.setTitle("Confirm");
+        alert.setHeaderText("Confirm Clear");
+        alert.setContentText("Are you sure you want to Clear Form?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
             CustomerTable.setDisable(false);
-            disableCustomerForm();       
+            disableCustomerForm();
             wipeCustomerForm();
             NewCustomerButton.setDisable(false);
             EditSelectedButton.setDisable(true);
             DeleteSelectedButton.setDisable(true);
-            }
+        }
     } //FINISHED
 
     @FXML
@@ -543,7 +529,7 @@ public class CustomersController implements Initializable {
         ObservableList<Customer> custClear = FXCollections.observableArrayList();
         Customer cust = CustomerTable.getSelectionModel().getSelectedItem();
         PreparedStatement delPull;
-        int idLookup = cust.getCustomerID();        
+        int idLookup = cust.getCustomerID();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm");
         alert.setHeaderText("Confirm Delete");
@@ -551,18 +537,18 @@ public class CustomersController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
-        try {
-            delPull =(PreparedStatement) conn.prepareStatement("DELETE customer.*, address.* from customer, address WHERE customer.customerId = ? AND customer.addressId = address.addressId");
-            delPull.setInt(1, idLookup);
-            int executeUpdate = delPull.executeUpdate();
-        } catch (SQLException e) {
+            try {
+                delPull = (PreparedStatement) conn.prepareStatement("DELETE customer.*, address.* from customer, address WHERE customer.customerId = ? AND customer.addressId = address.addressId");
+                delPull.setInt(1, idLookup);
+                int executeUpdate = delPull.executeUpdate();
+            } catch (SQLException e) {
+            }
+            CustomerTable.setDisable(false);
+            disableCustomerForm();
+            updateCustomerTableView();
+            wipeCustomerForm();
         }
-        CustomerTable.setDisable(false);
-        disableCustomerForm();
-        updateCustomerTableView();
-        wipeCustomerForm();  
-        }
-       
+
     } // FINISHED
 
     @FXML
@@ -574,15 +560,15 @@ public class CustomersController implements Initializable {
         stage.setScene(scene);
         stage.show();
     } // FINISHED
-     
+
     @FXML
     private void EditCustomerHandler(ActionEvent event) {
-       enableCustomerForm();
-       CustomerTable.setDisable(true);
-       DeleteSelectedButton.setDisable(true);
-       NewCustomerButton.setDisable(true);
+        enableCustomerForm();
+        CustomerTable.setDisable(true);
+        DeleteSelectedButton.setDisable(true);
+        NewCustomerButton.setDisable(true);
     } //FINISHED
-    
+
     @FXML
     private void NewCustomerHandler(ActionEvent event) {
         enableCustomerForm();
@@ -591,29 +577,29 @@ public class CustomersController implements Initializable {
         EditSelectedButton.setDisable(true);
         DeleteSelectedButton.setDisable(true);
         NewCustomerButton.setDisable(true);
-        
+
     } //FINISHED
 
     @FXML
-    private void SaveInputHandler(ActionEvent event) throws Exception {        
+    private void SaveInputHandler(ActionEvent event) throws Exception {
         if (validateBeforeSave()) {
-            if (saveToDatabase()); {
+            if (saveToDatabase());
+            {
                 CustomerTable.setDisable(false);
                 disableCustomerForm();
                 wipeCustomerForm();
                 updateCustomerTableView();
             }
         } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setHeaderText("Entry Not Saved");
-                alert.setContentText("Entry Not Saved");
-                Optional<ButtonType> result = alert.showAndWait();    
-                }
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("Entry Not Saved");
+            alert.setContentText("Entry Not Saved");
+            Optional<ButtonType> result = alert.showAndWait();
+        }
         NewCustomerButton.setDisable(false);
         EditSelectedButton.setDisable(false);
         DeleteSelectedButton.setDisable(false);
     }
-    
-    
+
 }

@@ -8,20 +8,20 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" maxHeight="386.0" maxWidth="563.0" prefHeight="226.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.LoginController">
-   <children>
-      <TextField fx:id="userNameTextField" layoutX="23.0" layoutY="75.0" onAction="#UserNameHandler" promptText="Username" />
-      <TextField fx:id="passwordTextField" layoutX="23.0" layoutY="113.0" onAction="#PasswordHandler" promptText="Password" />
-      <Button fx:id="LoginButton" layoutX="72.0" layoutY="154.0" mnemonicParsing="false" onAction="#LoginButtonHandler" text="Login" />
-      <Label fx:id="LoginTitleLabel" layoutX="30.0" layoutY="23.0" prefHeight="41.0" prefWidth="149.0" text="Login">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-      <Label layoutX="204.0" layoutY="18.0" prefHeight="192.0" prefWidth="149.0" text="C195 WGU Kevin McGhee " wrapText="true">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <Line endX="193.5" endY="21.292892456054688" startX="193.5" startY="196.5" />
-   </children>
+    <children>
+        <TextField fx:id="userNameTextField" layoutX="23.0" layoutY="75.0" onAction="#UserNameHandler" promptText="Username" />
+        <TextField fx:id="passwordTextField" layoutX="23.0" layoutY="113.0" onAction="#PasswordHandler" promptText="Password" />
+        <Button fx:id="LoginButton" layoutX="72.0" layoutY="154.0" mnemonicParsing="false" onAction="#LoginButtonHandler" text="Login" />
+        <Label fx:id="LoginTitleLabel" layoutX="30.0" layoutY="23.0" prefHeight="41.0" prefWidth="149.0" text="Login">
+            <font>
+                <Font name="System Bold" size="36.0" />
+            </font>
+        </Label>
+        <Label layoutX="204.0" layoutY="18.0" prefHeight="192.0" prefWidth="149.0" text="C195 WGU Kevin McGhee " wrapText="true">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Line endX="193.5" endY="21.292892456054688" startX="193.5" startY="196.5" />
+    </children>
 </AnchorPane>

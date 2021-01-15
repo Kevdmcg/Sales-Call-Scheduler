@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -47,24 +45,20 @@ import static util.DBConnection.conn;
 import static util.Query.getResult;
 import static util.Query.makeQuery;
 
-
-
-
-
 /**
  * FXML Controller class
  *
  * @author kmcgh15
  */
 public class ReportsController implements Initializable {
-    
+
     ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
     ObservableList<String> companyList = FXCollections.observableArrayList();
     ObservableList<Integer> monthlyCount = FXCollections.observableArrayList();
     private final DateTimeFormatter datetimeDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ZoneId localZoneID = ZoneId.systemDefault();
     private final ZoneId utcZoneID = ZoneId.of("UTC");
-    
+
     Parent root;
     Stage stage;
 
@@ -121,9 +115,8 @@ public class ReportsController implements Initializable {
      * Initializes the controller class.
      *
      */
-    
     private void tableThreeListener() {
-        TableThreeCustomerChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {        
+        TableThreeCustomerChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             public void changed(ObservableValue ov, String value, String new_value) {
                 if (new_value != null) {
                     String customerName = TableThreeCustomerChoiceBox.getValue();
@@ -132,49 +125,48 @@ public class ReportsController implements Initializable {
                     } catch (SQLException ex) {
                         Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                 }
-                
+
             }
         });
     }
-    
+
     private String getMonthlyTypeCount(int month, String type) throws SQLException {
         if (month < 10) {
-        makeQuery("SELECT count(*) from appointment where start >= '2021-0" + month + "-01' and start < '2021-0" + month + "-31' and TYPE='" + type +"';");
-        ResultSet count = getResult();
-        count.first();
-        String counter = Integer.toString(count.getInt("count(*)"));
-        return counter;
-        }
-        else {
-            makeQuery("SELECT count(*) from appointment where start >= '2021-" + month + "-01' and start < '2021-" + month + "-31' and TYPE='" + type +"';");
-        ResultSet count = getResult();
-        count.first();
-        String counter = Integer.toString(count.getInt("count(*)"));
-        return counter;
-            
+            makeQuery("SELECT count(*) from appointment where start >= '2021-0" + month + "-01' and start < '2021-0" + month + "-31' and TYPE='" + type + "';");
+            ResultSet count = getResult();
+            count.first();
+            String counter = Integer.toString(count.getInt("count(*)"));
+            return counter;
+        } else {
+            makeQuery("SELECT count(*) from appointment where start >= '2021-" + month + "-01' and start < '2021-" + month + "-31' and TYPE='" + type + "';");
+            ResultSet count = getResult();
+            count.first();
+            String counter = Integer.toString(count.getInt("count(*)"));
+            return counter;
+
         }
     }
-    
+
     private String getCustomerAppointmentCount(String customerName) throws SQLException {
         makeQuery("SELECT customerId from customer where customerName = '" + customerName + "'");
         ResultSet custId = getResult();
         custId.first();
         int queryInt = custId.getInt("customerId");
-        
+
         makeQuery("SELECT COUNT(*) FROM appointment WHERE customerId = " + queryInt);
         ResultSet countSet = getResult();
         countSet.first();
         String returnCount = Integer.toString(countSet.getInt("count(*)"));
         return returnCount;
     }
-    
+
     private void fillCustomerChoiceBox() throws SQLException {
         PreparedStatement fillCustomer;
-        fillCustomer =(PreparedStatement) conn.prepareStatement("SELECT customerName FROM customer");
+        fillCustomer = conn.prepareStatement("SELECT customerName FROM customer");
         ResultSet customers = fillCustomer.executeQuery();
-        
+
         while (customers.next()) {
             Customer cust = new Customer();
             cust.setCustomerName(customers.getString("customerName"));
@@ -183,13 +175,13 @@ public class ReportsController implements Initializable {
 
         }
     }
-    
+
     private boolean updateScheduleTable() throws SQLException {
-        appointmentList.clear();        
+        appointmentList.clear();
         String sqlStatement = ("SELECT userName, start, end, customerName FROM user, appointment, customer "
-                + "WHERE appointment.userId = user.userId and appointment.customerId = customer.customerId order by userName, start");        
+                + "WHERE appointment.userId = user.userId and appointment.customerId = customer.customerId order by userName, start");
         PreparedStatement ps;
-        ps =(PreparedStatement) conn.prepareStatement(sqlStatement);
+        ps = conn.prepareStatement(sqlStatement);
         Statement stmt = DBConnection.conn.createStatement();
         ResultSet result = stmt.executeQuery(sqlStatement);
         result.beforeFirst();
@@ -198,7 +190,7 @@ public class ReportsController implements Initializable {
             Customer customer = new Customer(result.getString("customerName"));
             User user = new User(result.getString("userName"));
             appointment.setCustomerName(result.getString("customerName"));
-            appointment.setUserName(result.getString("userName"));  
+            appointment.setUserName(result.getString("userName"));
             String startUTC = result.getString("start").substring(0, 19);
             String endUTC = result.getString("end").substring(0, 19);
 
@@ -213,26 +205,25 @@ public class ReportsController implements Initializable {
             appointment.setStart(localStartDT);
             appointment.setEnd(localEndDT);
             appointmentList.addAll(appointment);
-    }
-        UserScheduleTable.setItems(appointmentList);        
+        }
+        UserScheduleTable.setItems(appointmentList);
         return true;
     }
-    
-    
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {        
+    public void initialize(URL url, ResourceBundle rb) {
         PropertyValueFactory<Appointment, String> userNameFactory = new PropertyValueFactory<>("UserName");
         PropertyValueFactory<Appointment, String> custDateFactory = new PropertyValueFactory<>("Start");
         PropertyValueFactory<Appointment, String> custStartFactory = new PropertyValueFactory<>("End");
         PropertyValueFactory<Appointment, String> custEndFactory = new PropertyValueFactory<>("CustomerName");
-        
+
         ScheduleUserColumn.setCellValueFactory(userNameFactory);
         ScheduleStartColumn.setCellValueFactory(custDateFactory);
         ScheduleEndColumn.setCellValueFactory(custStartFactory);
         ScheduleClientColumn.setCellValueFactory(custEndFactory);
-        
+
         try {
-            updateScheduleTable();            
+            updateScheduleTable();
         } catch (SQLException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -242,7 +233,7 @@ public class ReportsController implements Initializable {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
         }
         tableThreeListener();
-    }    
+    }
 
     @FXML
     private void TypeMenuButtonHandler(ActionEvent event) {
@@ -250,7 +241,7 @@ public class ReportsController implements Initializable {
 
     @FXML
     private void BackButtonHandler(ActionEvent event) throws IOException {
-        
+
         root = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
         stage = (Stage) BackButton.getScene().getWindow();
         Scene scene = new Scene(root);
@@ -274,7 +265,7 @@ public class ReportsController implements Initializable {
         OctCountLabel.setText(getMonthlyTypeCount(10, type));
         NovCountLabel.setText(getMonthlyTypeCount(11, type));
         DecCountLabel.setText(getMonthlyTypeCount(12, type));
-        TypeMenuButton.setText(type);        
+        TypeMenuButton.setText(type);
     }
 
     @FXML
@@ -312,5 +303,5 @@ public class ReportsController implements Initializable {
         DecCountLabel.setText(getMonthlyTypeCount(12, type));
         TypeMenuButton.setText(type);
     }
-    
+
 }

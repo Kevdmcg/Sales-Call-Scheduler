@@ -12,11 +12,10 @@ import java.util.Calendar;
  *
  * @author kmcgh15
  */
-
 // Define country objects to interact with country table in database
 // countryId (int) , country (varchar) , createDate , createdBy , lastUpdate , lastUpdatedBy
 public class Country {
-    
+
     private int countryId;
     private String country;
     private Calendar createDate;
@@ -87,6 +86,5 @@ public class Country {
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
     }
-    
-    
+
 }

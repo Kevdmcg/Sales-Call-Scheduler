@@ -6,8 +6,6 @@
 package Model;
 
 // Needs to update the appointments table in database
-
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
@@ -20,7 +18,7 @@ import java.util.Calendar;
  * @author kmcgh15
  */
 public class Appointment {
-    
+
     private int appointmentId;
     private int customerId;
     private int userId;
@@ -48,12 +46,10 @@ public class Appointment {
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
-    
-
 
     public Appointment() {
     }
-    
+
     public Appointment(String userName, String start, String end, String customerName) {
         this.userName = userName;
         this.start = start;
@@ -114,32 +110,26 @@ public class Appointment {
         this.type = type;
         this.url = url;
     }
-    */    
-        
-
+     */
     public Appointment(int appointmentId, int customerId, String customerName, String start, String end, String appointmentDate, int userId, String title,
-            String description, String contact, String createdBy, String location, String type, String url, String dateTime ) {
-            
-            setAppointmentId(appointmentId);
-            setCustomerId(customerId);
-            setCustomerName(customerName);
-            setStart(start);
-            setEnd(end);
-            setAppointmentDate(appointmentDate);
-            setUserId(userId);
-            setTitle(title);
-            setDescription(description);
-            setCreatedBy(createdBy);
-            setLocation(location);
-            setType(type);
-            setUrl(url);
-            setDateTime(dateTime);
-    }    
+            String description, String contact, String createdBy, String location, String type, String url, String dateTime) {
 
+        setAppointmentId(appointmentId);
+        setCustomerId(customerId);
+        setCustomerName(customerName);
+        setStart(start);
+        setEnd(end);
+        setAppointmentDate(appointmentDate);
+        setUserId(userId);
+        setTitle(title);
+        setDescription(description);
+        setCreatedBy(createdBy);
+        setLocation(location);
+        setType(type);
+        setUrl(url);
+        setDateTime(dateTime);
+    }
 
-    
-    
-    
     public String getAppointmentDate() {
         return appointmentDate;
     }
@@ -155,7 +145,7 @@ public class Appointment {
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
-    
+
     public String getUserName() {
         return userName;
     }
@@ -163,7 +153,7 @@ public class Appointment {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
+
     public int getAppointmentId() {
         return appointmentId;
     }
@@ -283,8 +273,5 @@ public class Appointment {
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
-    
-    
-    
-    
+
 }

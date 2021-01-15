@@ -12,13 +12,12 @@ import java.util.Calendar;
  *
  * @author kmcgh15
  */
-
 // design customer objects to interact with customer table in database
 //  table columns:  customerId (int) (auto) (primary key) , customerName (varchar), addressId (int) (foreign key to addresses) , active (tinyint) ,
 // (creatDate (datetime) , createdBy (varchar) , lastUpdate (timestamp) , lasteUpdateBy (varchar)
 // must require name, address, phone number (?)(from address table)
 public class Customer {
-    
+
     private int customerID; //Auto incremented in database
     private String customerName;
     private int active;
@@ -35,15 +34,11 @@ public class Customer {
     private String activeString;
     private boolean activeBool;
 
-    
-
-    
-
     //constructor
     public Customer() {
 
     }
-    
+
     public Customer(int customerID, String customerName, int active, String address, String address2, String city, String postalCode, String phone, String country, Date lastUpdate, String lastUpdateBy) {
         setCustomerID(customerID);
         setCustomerName(customerName);
@@ -73,7 +68,6 @@ public class Customer {
     }
 
     //getters
-    
     public int getCustomerID() {
         return customerID;
     }
@@ -117,13 +111,12 @@ public class Customer {
     public String getCustomerLastUpdateBy() {
         return lastUpdateBy;
     }
-    
+
     public String getActiveString() {
         return activeString;
     }
 
     //setters
-    
     public void setCustomerID(int customerID) {
 
         this.customerID = customerID;
@@ -168,15 +161,15 @@ public class Customer {
     public void setCustomerLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
     }
-    
+
     public void setActiveString(String activeString) {
-        
+
         if (this.active != 1) {
-          this.activeString = "N";
-        }  else {
-           this.activeString = "Y"; 
+            this.activeString = "N";
+        } else {
+            this.activeString = "Y";
         }
-        
+
     }
-    
+
 }

@@ -15,30 +15,31 @@ import static util.DBConnection.conn;
  * @author kmcgh15
  */
 public class Query {
-    
-private Connection con;
-private static PreparedStatement ps;
-private static ResultSet rs;
-private static String query;
 
-    public static void makeQuery(String q){
-        query =q;
-        try{
-            ps=(PreparedStatement) conn.prepareStatement(q);
+    private Connection con;
+    private static PreparedStatement ps;
+    private static ResultSet rs;
+    private static String query;
+
+    public static void makeQuery(String q) {
+        query = q;
+        try {
+            ps = (PreparedStatement) conn.prepareStatement(q);
             // determine query execution
-            if(query.toLowerCase().startsWith("select"))
-                rs=ps.executeQuery(q);
-             if(query.toLowerCase().startsWith("delete")||query.toLowerCase().startsWith("insert")||query.toLowerCase().startsWith("update"))
+            if (query.toLowerCase().startsWith("select")) {
+                rs = ps.executeQuery(q);
+            }
+            if (query.toLowerCase().startsWith("delete") || query.toLowerCase().startsWith("insert") || query.toLowerCase().startsWith("update")) {
                 ps.executeUpdate(q);
-            
-        }
-        catch(Exception ex){
-            System.out.println("Error: "+ex.getMessage());
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
         }
     }
-    public static ResultSet getResult(){
+
+    public static ResultSet getResult() {
         return rs;
-    } 
-    
-    
+    }
+
 }

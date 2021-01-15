@@ -5,7 +5,6 @@
  */
 package Model;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
@@ -13,14 +12,10 @@ import java.util.Calendar;
  *
  * @author kmcgh15
  */
-
-// adress table columns : addressId (int) , address (varchar) , address2 (varchar)(?) , cityId (int) (foreign key) , postalcode (varchar) ,
-// phone (varchar) , createDate , createdBy , lastUpdate, lastUpdateBy
 public class address {
-    
+
     private int addressId;
 
-    
     private String address;
     private String address2;
     private int cityId;
@@ -29,7 +24,7 @@ public class address {
     private String createdBy;
     private String lastUpdateBy;
     private Calendar createDate;
-    private Timestamp lastUpdate; 
+    private Timestamp lastUpdate;
 
     public address(int addressId, String address, String address2, int cityId, String postalCode, String phone, String createdBy, String lastUpdateBy, Calendar createDate, Timestamp lastUpdate) {
         this.addressId = addressId;
@@ -43,9 +38,6 @@ public class address {
         this.createDate = createDate;
         this.lastUpdate = lastUpdate;
     }
-
-    
-    
 
     public address(int addressid, String addressId, String address, String address2, int cityId, String postalCode, String phone, String lastUpdate, String lastUpdateby, java.util.Calendar createDateCalendar, java.util.Calendar lastUpdateCalendar) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -130,7 +122,5 @@ public class address {
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
-    
-    
-    
+
 }

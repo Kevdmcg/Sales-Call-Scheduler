@@ -30,29 +30,29 @@ public class MainScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }  
-    
+    }
+
     Parent main;
     Stage stage;
 
     @FXML
     private void MainAppointmentButton(ActionEvent event) throws IOException {
-        
+
         Parent main = FXMLLoader.load(getClass().getResource("/View_Controller/Appointments.fxml"));
         Scene scene = new Scene(main);
-        
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
     private void MainCustomersButton(ActionEvent event) throws IOException {
-        
+
         Parent main = FXMLLoader.load(getClass().getResource("/View_Controller/Customers.fxml"));
         Scene scene = new Scene(main);
-        
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
@@ -61,16 +61,16 @@ public class MainScreenController implements Initializable {
     private void MainReportsButton(ActionEvent event) throws IOException {
         Parent main = FXMLLoader.load(getClass().getResource("/View_Controller/Reports.fxml"));
         Scene scene = new Scene(main);
-        
-        Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
-        
+
     }
 
     @FXML
     private void MainExitButton(ActionEvent event) {
         System.exit(0);
     }
-    
+
 }

@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,7 +22,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,8 +39,6 @@ import util.DBConnection;
 import static util.Query.getResult;
 import static util.Query.makeQuery;
 
-
-
 /**
  * FXML Controller class
  *
@@ -59,22 +55,18 @@ public class LoginController implements Initializable {
     private TextField passwordTextField;
     @FXML
     private Label LoginTitleLabel;
-    
-    private boolean alertCheck(int userId) throws SQLException{
+
+    private boolean alertCheck(int userId) throws SQLException {
         ZonedDateTime zdt = ZonedDateTime.now();
         Instant utcStamp = Instant.now();
         long minutes = 15;
         Instant instantFifteen = utcStamp.plus(minutes, ChronoUnit.MINUTES);
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(15));
-        makeQuery("SELECT count(*) FROM appointment WHERE userId = "+ userId +" and start between CURRENT_TIMESTAMP and '"+instantFifteen+"'");
+        makeQuery("SELECT count(*) FROM appointment WHERE userId = " + userId + " and start between CURRENT_TIMESTAMP and '" + instantFifteen + "'");
         ResultSet alertSet = getResult();
         alertSet.first();
         int alertInt = alertSet.getInt("count(*)");
-        if (alertInt == 0){
-            return false;
-        } else {
-            return true;
-        }
+        return alertInt != 0;
     }
 
     /**
@@ -87,8 +79,7 @@ public class LoginController implements Initializable {
         userNameTextField.setText(rbt.getString("userName"));
         passwordTextField.setText(rbt.getString("password"));
         LoginButton.setText(rbt.getString("loginButton"));
-    }  
-   
+    }
 
     @FXML
     private void UserNameHandler(ActionEvent event) {
@@ -112,13 +103,13 @@ public class LoginController implements Initializable {
             User.setUserID(userID);
             User.setUsername(usernameInput);
             loginLog(user.getUsername());
-            if (alertCheck(userID)){
+            if (alertCheck(userID)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("IMMINENT APPOINTMENT");
-                    alert.setHeaderText("You have an appointment booked within 15 minutes");
-                    alert.setContentText("Check schedule a prepare for imminent appointment");
-                    Optional<ButtonType> result = alert.showAndWait();
-                
+                alert.setTitle("IMMINENT APPOINTMENT");
+                alert.setHeaderText("You have an appointment booked within 15 minutes");
+                alert.setContentText("Check schedule a prepare for imminent appointment");
+                Optional<ButtonType> result = alert.showAndWait();
+
             }
             root = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
             stage = (Stage) LoginButton.getScene().getWindow();
@@ -134,10 +125,10 @@ public class LoginController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
         }
     }
-    
+
     private boolean isValidPassword(int userID, String password) throws SQLException {
         Statement statement = DBConnection.conn.createStatement();
-        String sqlStatement = "SELECT password FROM user WHERE userId ='" + userID + "'";;
+        String sqlStatement = "SELECT password FROM user WHERE userId ='" + userID + "'";
         ResultSet result = statement.executeQuery(sqlStatement);
         while (result.next()) {
             if (result.getString("password").equals(password)) {
@@ -146,7 +137,7 @@ public class LoginController implements Initializable {
         }
         return false;
     }
-    
+
     private int getUserID(String username) throws SQLException {
         int userID = -1;
         Statement statement = DBConnection.conn.createStatement();
@@ -157,13 +148,14 @@ public class LoginController implements Initializable {
         }
         return userID;
     }
+
     public static java.sql.Timestamp getTimeStamp() {
         ZoneId zoneid = ZoneId.of("UTC");
         LocalDateTime localDateTime = LocalDateTime.now(zoneid);
         java.sql.Timestamp timeStamp = Timestamp.valueOf(localDateTime);
         return timeStamp;
     }
-        
+
     public void loginLog(String user) {
         try {
             String fileName = "loginLog";
@@ -174,5 +166,5 @@ public class LoginController implements Initializable {
         } catch (IOException e) {
             System.out.println(e);
         }
-    }    
+    }
 }

@@ -9,40 +9,40 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.MainScreenController">
-   <children>
-      <VBox alignment="CENTER" layoutX="9.0" layoutY="9.0" prefHeight="378.0" prefWidth="381.0" spacing="20.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0">
-         <children>
-            <Label alignment="CENTER" prefHeight="57.0" prefWidth="189.0" text="Main Menu">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Label>
-            <VBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="100.0" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainAppointmentButton" prefHeight="52.0" prefWidth="243.0" text="Appointments" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainCustomersButton" prefHeight="52.0" prefWidth="243.0" text="Customers" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainReportsButton" prefHeight="52.0" prefWidth="243.0" text="Reports" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainExitButton" prefHeight="52.0" prefWidth="243.0" text="Exit Program" textAlignment="CENTER">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </VBox>
-      <Line endX="392.0" endY="92.49998474121094" startX="18.5" startY="92.5" />
-   </children>
+    <children>
+        <VBox alignment="CENTER" layoutX="9.0" layoutY="9.0" prefHeight="378.0" prefWidth="381.0" spacing="20.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0">
+            <children>
+                <Label alignment="CENTER" prefHeight="57.0" prefWidth="189.0" text="Main Menu">
+                    <font>
+                        <Font size="36.0" />
+                    </font>
+                </Label>
+                <VBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="100.0" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainAppointmentButton" prefHeight="52.0" prefWidth="243.0" text="Appointments" textAlignment="CENTER">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainCustomersButton" prefHeight="52.0" prefWidth="243.0" text="Customers" textAlignment="CENTER">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainReportsButton" prefHeight="52.0" prefWidth="243.0" text="Reports" textAlignment="CENTER">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#MainExitButton" prefHeight="52.0" prefWidth="243.0" text="Exit Program" textAlignment="CENTER">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Button>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </VBox>
+        <Line endX="392.0" endY="92.49998474121094" startX="18.5" startY="92.5" />
+    </children>
 </AnchorPane>

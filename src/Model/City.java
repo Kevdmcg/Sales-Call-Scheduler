@@ -6,19 +6,17 @@
 package Model;
 
 //  Needed to fill city table of db
-
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 // columns:  cityId (int) (auto),city (varchar) , countryId (int) (foreign key) , createDate (datetime) , createdBy (varchar) , lastUpdate (timestamp)
 // lastUpdatedBy (varchar)
-
 /**
  *
  * @author kmcgh15
  */
 public class City {
-    
+
     private int cityId;
     private String city;
     private int countryId;
@@ -99,8 +97,5 @@ public class City {
     public void setLastUpdateBy(String lastUpdateBy) {
         this.lastUpdateBy = lastUpdateBy;
     }
-    
-    
-            
-    
+
 }
