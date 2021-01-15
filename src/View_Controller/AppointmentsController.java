@@ -803,15 +803,10 @@ public class AppointmentsController implements Initializable {
 
     @FXML
     private void ClearFormButtonHandler(ActionEvent event) {
-        System.out.println();
-        System.out.println("++++ ClearFormButtonHandler routine++++");
         disableAppointmentForm();
         wipeAppointmentForm();
         enableLeftBar();
         AppointmentsTableView.setDisable(false);
-        System.out.println("++++ ClearFormButtonHandler routine++++");
-        System.out.println();
-        
     }
 
     @FXML
@@ -845,30 +840,20 @@ public class AppointmentsController implements Initializable {
       isMonthlyInt = 0;
       isWeeklyInt = 0;
       isMonthly = false;
-      isWeekly = false;
-      
-      updateAppointmentsTableView();
-      
-      
-      
+      isWeekly = false;      
+      updateAppointmentsTableView();      
     }
 
     @FXML
     private void CancelInputButtonHandler(ActionEvent event) {
-        System.out.println();
-        System.out.println("++++ CancelInputButtonHandler routine++++");
         AppointmentsTableView.setDisable(false);
         disableAppointmentForm();
         wipeAppointmentForm();
         enableLeftBar();
-        System.out.println("++++ CancelInputButtonHandler routine++++");
-        System.out.println();
     }
 
     @FXML
     private void SaveAppointmentButtonHandler(ActionEvent event) throws Exception {
-        System.out.println();
-        System.out.println("++++ SaveAppointmentButtonHandler routine++++");
         if (validateForm()) {
             if (saveToDatabase()){
                 enableLeftBar();
@@ -876,9 +861,7 @@ public class AppointmentsController implements Initializable {
                 AppointmentsTableView.setDisable(false);
                 disableAppointmentForm();
                 wipeAppointmentForm();
-                System.out.println("++++ SaveAppointmentButtonHandler routine++++");
-                System.out.println();
-                
+                System.out.println();                
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
@@ -886,8 +869,7 @@ public class AppointmentsController implements Initializable {
                 alert.setContentText("Context Error, inputs did not save");
                 Optional<ButtonType> result = alert.showAndWait();
                 
-            }
-            
+            }            
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
@@ -895,12 +877,6 @@ public class AppointmentsController implements Initializable {
             alert.setContentText("Invalid entry not validated for save");
             Optional<ButtonType> result = alert.showAndWait();
             
-        }
-        
-        
-    }
-
-    
-
-    
+        } 
+    }  
 }
