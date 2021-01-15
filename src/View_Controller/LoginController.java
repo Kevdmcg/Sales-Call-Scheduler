@@ -56,6 +56,7 @@ public class LoginController implements Initializable {
     @FXML
     private Label LoginTitleLabel;
 
+    // this is the 15 minute appointment alert check
     private boolean alertCheck(int userId) throws SQLException {
         ZonedDateTime zdt = ZonedDateTime.now();
         Instant utcStamp = Instant.now();
@@ -88,7 +89,8 @@ public class LoginController implements Initializable {
     @FXML
     private void PasswordHandler(ActionEvent event) {
     }
-
+    
+    // This button both handles the password check and the alert check for appointments
     @FXML
     private void LoginButtonHandler(ActionEvent event) throws IOException, SQLException {
         ResourceBundle rbt = ResourceBundle.getBundle("loginRb/loginRb", Locale.getDefault());
@@ -148,14 +150,16 @@ public class LoginController implements Initializable {
         }
         return userId;
     }
-
+    
+    // this function pulls a timestamp for the activityLog
     public static java.sql.Timestamp getTimeStamp() {
         ZoneId zoneid = ZoneId.of("UTC");
         LocalDateTime localDateTime = LocalDateTime.now(zoneid);
         java.sql.Timestamp timeStamp = Timestamp.valueOf(localDateTime);
         return timeStamp;
     }
-
+    
+    // this function records login activity
     public void activityLog(String user) {
         try {
             String fileName = "activityLog";

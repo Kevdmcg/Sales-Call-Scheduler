@@ -115,6 +115,7 @@ public class ReportsController implements Initializable {
      * Initializes the controller class.
      *
      */
+    // This listener updates the label for the third report once a customer has been selected by calling the getCustomerAppointmentCount() to change the label text
     private void tableThreeListener() {
         TableThreeCustomerChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             public void changed(ObservableValue ov, String value, String new_value) {
@@ -132,6 +133,7 @@ public class ReportsController implements Initializable {
         });
     }
 
+    // This retrieves the counts/by/type for appointments per month from the database
     private String getMonthlyTypeCount(int month, String type) throws SQLException {
         if (month < 10) {
             makeQuery("SELECT count(*) from appointment where start >= '2021-0" + month + "-01' and start < '2021-0" + month + "-31' and TYPE='" + type + "';");
@@ -148,7 +150,8 @@ public class ReportsController implements Initializable {
 
         }
     }
-
+    
+    // This counts the number of appointments for a given customer for table #3 
     private String getCustomerAppointmentCount(String customerName) throws SQLException {
         makeQuery("SELECT customerId from customer where customerName = '" + customerName + "'");
         ResultSet custId = getResult();
@@ -161,7 +164,8 @@ public class ReportsController implements Initializable {
         String returnCount = Integer.toString(countSet.getInt("count(*)"));
         return returnCount;
     }
-
+    
+    // gets the valid customers to fill choiceBox
     private void fillCustomerChoiceBox() throws SQLException {
         PreparedStatement fillCustomer;
         fillCustomer = conn.prepareStatement("SELECT customerName FROM customer");
@@ -175,7 +179,8 @@ public class ReportsController implements Initializable {
 
         }
     }
-
+    
+    // updates the tableView when new information needs displayed
     private boolean updateScheduleTable() throws SQLException {
         appointmentList.clear();
         String sqlStatement = ("SELECT userName, start, end, customerName FROM user, appointment, customer "

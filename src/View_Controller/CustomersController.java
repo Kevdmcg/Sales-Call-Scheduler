@@ -118,7 +118,8 @@ public class CustomersController implements Initializable {
     ObservableList<Customer> customerList = FXCollections.observableArrayList();
     ObservableList<String> cityList = FXCollections.observableArrayList();
     ObservableList<String> countryList = FXCollections.observableArrayList();
-
+    
+    // function call to update tableView when new info needs displayed
     public void updateCustomerTableView() throws SQLException {
         customerList.clear();
         Statement stmt = DBConnection.conn.createStatement();
@@ -139,7 +140,8 @@ public class CustomersController implements Initializable {
         }
         CustomerTable.setItems(customerList);
     } // FINISHED
-
+    
+    // fills the cityChoiceBox with the available cities in the database
     private void fillCityChoiceBox() throws SQLException, Exception {
         PreparedStatement selectCity;
         selectCity = (PreparedStatement) conn.prepareStatement("SELECT city FROM city");
@@ -153,7 +155,8 @@ public class CustomersController implements Initializable {
         selectCity.close();
         cities.close();
     } // FINISHED
-
+    
+    // retrieves cityId for use in updating database
     private int getCityID(String city) throws SQLException, Exception {
         int cityID = -1;
         makeQuery("SELECT cityId FROM city WHERE city.city = '" + city + "'");
@@ -163,7 +166,8 @@ public class CustomersController implements Initializable {
         }
         return cityID;
     }
-
+    
+    // retrieves countryId for use in updating database
     private int getCountryId(String country) throws SQLException, Exception {
         int countryId = -1;
 
@@ -175,7 +179,8 @@ public class CustomersController implements Initializable {
         }
         return countryId;
     }
-
+    
+    // retrieves country name for use in updating database
     private String getCountry(int countryId) throws SQLException {
         String country = "repair";
         makeQuery("SELECT country FROM country WHERE countryId = '" + countryId + "'");
@@ -228,7 +233,8 @@ public class CustomersController implements Initializable {
         //CountryLabel.setText("");
 
     } // FINISHED 
-
+    
+    // validates that no required fields are empty before saving a new customer
     private boolean validateBeforeSave() {
         String saveName = NameTextField.getText();
         String saveAddress = AddressTextField.getText();
@@ -305,7 +311,8 @@ public class CustomersController implements Initializable {
 
         return true;
     } // FINISHED 
-
+    
+    // function called to actually save to database
     private boolean saveToDatabase() throws SQLException, Exception {
         String idString = CustomerIDTextField.getText();
         String nameSave = NameTextField.getText();
@@ -370,7 +377,8 @@ public class CustomersController implements Initializable {
         }
         return true;
     }
-
+    
+    // fills country label based on selected city
     private String fillCountryLabel(String city) throws SQLException, Exception {
         if (city != null) {
             String fillCountry = "SELECT countryId FROM city WHERE city.cityId = " + getCityID(city);
@@ -389,6 +397,7 @@ public class CustomersController implements Initializable {
         }
     }
 
+     // listens for changes in CityChoiceBox for updating countryLabel
     private void startListener() {
         CityChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override

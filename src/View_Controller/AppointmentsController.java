@@ -207,7 +207,7 @@ public class AppointmentsController implements Initializable {
         });
     }
 
-    @FXML
+    @FXML  // This code will pre-fill the appointment form on the right when an item is selected from tableView
     private void appointmentMouseClick(MouseEvent event) throws SQLException, Exception {
         Appointment appointment = AppointmentsTableView.getSelectionModel().getSelectedItem();
         int idLookup = appointment.getAppointmentId();
@@ -251,7 +251,8 @@ public class AppointmentsController implements Initializable {
         }
 
     } //FINISHED
-
+    
+    // fills the list of available start times
     private void fillStartList() {
         LocalTime startTimeListOpen = LocalTime.of(8, 0, 0);
         LocalTime startTimeListClose = LocalTime.of(17, 0, 0);
@@ -265,7 +266,8 @@ public class AppointmentsController implements Initializable {
         }
         StartTimeChoiceBox.setItems(startList);
     }
-
+    
+    // fills the choiceBox with valid customers
     private void fillCustomerList() throws SQLException {
         PreparedStatement fillCustomer;
         fillCustomer = conn.prepareStatement("SELECT customerName FROM customer");
@@ -278,7 +280,8 @@ public class AppointmentsController implements Initializable {
 
         }
     }
-
+    
+    // function call each time the tableView needs updated with fresh information
     public void updateAppointmentsTableView() throws SQLException {
         appointmentList.clear();
 
@@ -342,7 +345,8 @@ public class AppointmentsController implements Initializable {
             filterAppointmentsByMonth(appointmentList);
         }
     }
-
+    
+    // Checks that no empty fields on the new/edit appointment form
     private boolean validateForm() {
         String customerValid = CompanyNameChoiceBox.getValue();
         String titleValid = MeetingTitleTextField.getText();
@@ -435,15 +439,31 @@ public class AppointmentsController implements Initializable {
 
         return true;
     }
-
+    
+    // This code checks for conflicting appointments before saving an appointment.  It queries the database for appointments in that time and returns false if it cannot
+    // be saved
     private boolean checkConflict(Timestamp start, Timestamp end, int userId) throws SQLException {
-        makeQuery("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "'");
+        System.out.println("Appointment Conflict check started");
+        System.out.println("start: "+ start);
+        System.out.println("end: "+ end);
+        System.out.println("userId: "+ userId);
+        System.out.println("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
+        makeQuery("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
         ResultSet conflict = getResult();
         conflict.first();
         int conflictInt = conflict.getInt("count(*)");
-        return conflictInt <= 0;
+        System.out.println("conflict int = "+conflictInt);
+        if (conflictInt >= 1) {
+            System.out.println(" Conflict check returning false");
+            return false;
+        } else {
+            System.out.println(" Conflict check returning true");
+            return true;  
+        }
+        
     }
-
+    
+    // a function for looking up CustomerIds inside appointments
     private int queryCustomerId(String customerName) throws SQLException {
         String customerIdString = CompanyNameChoiceBox.getValue();
         makeQuery("SELECT customerId FROM customer WHERE customerName='" + customerIdString + "'");
@@ -453,7 +473,8 @@ public class AppointmentsController implements Initializable {
         int queryCustomerId = custId.getInt("customerId");
         return queryCustomerId;
     }
-
+    
+    // the actual save to database routine.  checks validity, conflicts, then checks if its a new or an edit
     private boolean saveToDatabase() throws SQLException, Exception {
         String localStartDTString = MeetingDateCalendar.getValue() + " " + StartTimeChoiceBox.getSelectionModel().getSelectedItem() + ":00";
         String localEndDTString = MeetingDateCalendar.getValue() + " " + EndTimeLabel.getText();
@@ -521,7 +542,8 @@ public class AppointmentsController implements Initializable {
         }
 
     }
-
+    
+    // filter function 
     public void filterAppointmentsByWeek(ObservableList appointmentsWeek) {
         LocalDate now = LocalDate.now();
         LocalDate nowPlus1Week = now.plusWeeks(1);
@@ -533,7 +555,8 @@ public class AppointmentsController implements Initializable {
         });
         AppointmentsTableView.setItems(filteredData);
     }
-
+    
+    // filter function
     public void filterAppointmentsByMonth(ObservableList appointmentsOL) throws SQLException {
         LocalDate now = LocalDate.now();
         LocalDate nowPlus1Month = now.plusMonths(1);
