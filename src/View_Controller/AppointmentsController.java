@@ -189,6 +189,7 @@ public class AppointmentsController implements Initializable {
             if (new_value != null && StartTimeChoiceBox != null) {
                 LocalTime closeTime = LocalTime.of(17, 00, 00);
                 String durationTime = new_value;
+                System.out.println("inside durationListener durationIntl: "+Integer.parseInt(durationTime.substring(0, 2)));
                 int durationInt1 = Integer.parseInt(durationTime.substring(0, 2));
                 LocalTime startTime1 = StartTimeChoiceBox.getValue();
                 LocalTime endTime1 = startTime1.plusMinutes(durationInt1);
@@ -209,13 +210,24 @@ public class AppointmentsController implements Initializable {
 
     @FXML  // This code will pre-fill the appointment form on the right when an item is selected from tableView
     private void appointmentMouseClick(MouseEvent event) throws SQLException, Exception {
+        System.out.println("+++++appointmentMouseClick activated");
         Appointment appointment = AppointmentsTableView.getSelectionModel().getSelectedItem();
-        int idLookup = appointment.getAppointmentId();
-        makeQuery("SELECT * FROM appointment, customer WHERE appointment.appointmentId = " + idLookup + " AND customer.customerId = appointment.customerId ");
+        int idClickLookup = appointment.getAppointmentId();
+        System.out.println("+++++appointmentMouseClick idClickLookup:"+idClickLookup);
+        makeQuery("SELECT * FROM appointment, customer WHERE appointment.appointmentId = " + idClickLookup + " AND customer.customerId = appointment.customerId ");
+        System.out.println("+++++appointmentMouseClick Query Made");
         ResultSet clickSet = getResult();
         ResultSetMetaData clickmeta = clickSet.getMetaData();
         int columnsNumber = clickmeta.getColumnCount();
-
+        while (clickSet.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnValue = clickSet.getString(i);
+                System.out.print(columnValue + " " + clickmeta.getColumnName(i));
+        }
+        System.out.println("");
+        }
+        clickSet.beforeFirst();
         while (clickSet.next()) {
             CompanyNameChoiceBox.setValue(clickSet.getString("customerName"));
             MeetingTitleTextField.setText(clickSet.getString("title"));
@@ -440,26 +452,93 @@ public class AppointmentsController implements Initializable {
         return true;
     }
     
-    // This code checks for conflicting appointments before saving an appointment.  It queries the database for appointments in that time and returns false if it cannot
+    // This checks for scheduling conflicts for editing an appointment
+    private boolean checkConflictEdit(Timestamp start, Timestamp end, LocalDate localDate, int userId, int appointmentId) throws SQLException {
+        System.out.println("Appointment Conflict EDITED check started");
+        System.out.println("start: "+ start);
+        System.out.println("end: "+ end);
+        System.out.println("localDate "+ localDate);
+        System.out.println("userId: "+ userId);
+        System.out.println("appointmentId: "+ appointmentId);
+        makeQuery("SELECT start, end, appointmentId FROM appointment WHERE userId='"+userId+"' and start between '"+localDate+" 00:00:00.0' and '"+localDate+" 23:59:59.0'");
+        System.out.println("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
+        //makeQuery("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
+        ResultSet conflict = getResult();
+        ResultSetMetaData rsmd = conflict.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        while (conflict.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnValue = conflict.getString(i);
+                System.out.print(columnValue + " " + rsmd.getColumnName(i));
+        }
+        System.out.println("");
+        }
+        
+        conflict.beforeFirst();
+        while (conflict.next()){
+            Appointment appointment = new Appointment();
+            appointment.setStart(conflict.getString("start"));
+            appointment.setEnd(conflict.getString("end"));
+            appointment.setAppointmentId(conflict.getInt("appointmentId"));
+            
+            System.out.println("inside RESULTSET sqlStart: "+appointment.getStart());
+            System.out.println("inside RESULTSET sqlEnd: "+appointment.getEnd());
+            //Timestamp sqlStart= Timestamp.valueOf(appointment.getStart().substring(11,18));
+            //Timestamp sqlEnd= Timestamp.valueOf(appointment.getEnd().substring(11,18));
+            Timestamp sqlStart= Timestamp.valueOf(appointment.getStart());
+            Timestamp sqlEnd= Timestamp.valueOf(appointment.getEnd());
+            if (start.before(sqlStart) && end.after(sqlStart) && appointmentId != appointment.getAppointmentId()) {
+                return false;
+            } else if (start.after(sqlStart) && start.before(sqlEnd) && appointmentId != appointment.getAppointmentId()) {
+                return false;
+            }
+        }
+        return true;
+        
+    }
+    
+    
+    // This code checks for conflicting appointments for new appointments before saving an appointment.  It queries the database for appointments in that time and returns false if it cannot
     // be saved
-    private boolean checkConflict(Timestamp start, Timestamp end, int userId) throws SQLException {
-        System.out.println("Appointment Conflict check started");
+    private boolean checkConflictNew(Timestamp start, Timestamp end, LocalDate localDate, int userId) throws SQLException {
+        System.out.println("Appointment Conflict NEW check started");
         System.out.println("start: "+ start);
         System.out.println("end: "+ end);
         System.out.println("userId: "+ userId);
-        System.out.println("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
-        makeQuery("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
+        System.out.println("localDate "+ localDate);
+        makeQuery("SELECT start, end FROM appointment WHERE userId='"+userId+"' and start between '"+localDate+" 00:00:00.0' and '"+localDate+" 23:59:59.0'");
+        //System.out.println("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
+        //makeQuery("SELECT count(*) FROM appointment WHERE userID= '" + userId + "' and start between '" + start + "' and '" + end + "' OR end between '" + start + "' and '" + end + "'");
         ResultSet conflict = getResult();
-        conflict.first();
-        int conflictInt = conflict.getInt("count(*)");
-        System.out.println("conflict int = "+conflictInt);
-        if (conflictInt >= 1) {
-            System.out.println(" Conflict check returning false");
-            return false;
-        } else {
-            System.out.println(" Conflict check returning true");
-            return true;  
+        ResultSetMetaData rsmd = conflict.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        while (conflict.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnValue = conflict.getString(i);
+                System.out.print(columnValue + " " + rsmd.getColumnName(i));
         }
+        System.out.println("");
+        }
+        conflict.beforeFirst();
+        while (conflict.next()){
+            Appointment appointment = new Appointment();
+            appointment.setStart(conflict.getString("start"));
+            appointment.setEnd(conflict.getString("end"));
+            System.out.println("inside RESULTSET sqlStart: "+appointment.getStart());
+            System.out.println("inside RESULTSET sqlEnd: "+appointment.getEnd());
+            //Timestamp sqlStart= Timestamp.valueOf(appointment.getStart().substring(11,18));
+            //Timestamp sqlEnd= Timestamp.valueOf(appointment.getEnd().substring(11,18));
+            Timestamp sqlStart= Timestamp.valueOf(appointment.getStart());
+            Timestamp sqlEnd= Timestamp.valueOf(appointment.getEnd());
+            if (start.before(sqlStart) && end.after(sqlStart)) {
+                return false;
+            } else if (start.after(sqlStart) && start.before(sqlEnd)) {
+                return false;
+            }
+        }
+        return true;
         
     }
     
@@ -477,17 +556,27 @@ public class AppointmentsController implements Initializable {
     // the actual save to database routine.  checks validity, conflicts, then checks if its a new or an edit
     private boolean saveToDatabase() throws SQLException, Exception {
         String localStartDTString = MeetingDateCalendar.getValue() + " " + StartTimeChoiceBox.getSelectionModel().getSelectedItem() + ":00";
+            System.out.println("+++saveToDatabase localStartDTString: " +localStartDTString);
         String localEndDTString = MeetingDateCalendar.getValue() + " " + EndTimeLabel.getText();
+            System.out.println("+++saveToDatabase localEndDTString: " +localEndDTString);
         String customerName = CompanyNameChoiceBox.getValue();
         LocalDate datePickerValue = MeetingDateCalendar.getValue();
+            System.out.println("+++saveToDatabase datePickerValue: " +datePickerValue);
         LocalDateTime localStartTime = LocalDateTime.parse(localStartDTString, dateTimeFormat);
+            System.out.println("+++saveToDatabase localStartTime: " +localStartTime);
         LocalDateTime localEndTime = LocalDateTime.parse(localEndDTString, dateTimeFormat);
+        System.out.println("+++saveToDatabase localEndTime: " +localEndTime);
         ZonedDateTime startUTC = localStartTime.atZone(localTimeZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+        System.out.println("+++saveToDatabase startUTC: " +startUTC);
         ZonedDateTime endUTC = localEndTime.atZone(localTimeZoneId).withZoneSameInstant(ZoneId.of("UTC"));
+        System.out.println("+++saveToDatabase endUTC: " +endUTC);
         Timestamp sqlStartTS = Timestamp.valueOf(startUTC.toLocalDateTime());
+        System.out.println("+++saveToDatabase sqlStartTS: " +sqlStartTS);
         Timestamp sqlEndTS = Timestamp.valueOf(endUTC.toLocalDateTime());
-        if (checkConflict(sqlStartTS, sqlEndTS, User.getUserId())) {
-            if (isNew) {
+        System.out.println("+++saveToDatabase sqlEndTS: " +sqlEndTS);
+        System.out.println("");
+        
+        if (isNew && checkConflictNew(sqlStartTS, sqlEndTS, datePickerValue, User.getUserId())) {
                 String insertAppointment = "INSERT INTO appointment(customerId, userId, title, description, location, contact, type, url, start, end,"
                         + " createdBy, lastUpdateBy, createDate) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)"; //13
                 PreparedStatement psAppointment;
@@ -507,40 +596,42 @@ public class AppointmentsController implements Initializable {
                 int rs = psAppointment.executeUpdate();
                 return true;
 
-            } else {
+            } else if (!isNew) {
                 Appointment appt = AppointmentsTableView.getSelectionModel().getSelectedItem();
-                int idlookup = appt.getAppointmentId();
-                String updateAppointment = "UPDATE appointment SET customerId = ?, userId = ?, title = ?, description = ?, location = ?,"
-                        + " contact = ?, type = ?, url = ?, start = ?, end = ?, lastUpdateBy = ? WHERE appointmentId = ?";
-                PreparedStatement psAppointment;
-                psAppointment = conn.prepareStatement(updateAppointment);
-                psAppointment.setInt(1, queryCustomerId(customerName));
-                psAppointment.setInt(2, User.getUserId());
-                psAppointment.setString(3, MeetingTitleTextField.getText());
-                psAppointment.setString(4, MeetingDescriptionTextField.getText());
-                psAppointment.setString(5, BranchLocationLabel.getText());
-                psAppointment.setString(6, contactTextBox.getText());
-                psAppointment.setString(7, MeetingTypeChoiceBox.getValue());
-                psAppointment.setString(8, UrlLabel.getText());
-                psAppointment.setTimestamp(9, sqlStartTS);
-                psAppointment.setTimestamp(10, sqlEndTS);
-                psAppointment.setString(11, User.getUsername());
-                psAppointment.setInt(12, idlookup);
-                int rs = psAppointment.executeUpdate();
-                return true;
+                int idLookup = appt.getAppointmentId();
+                System.out.println("inside !isNew idlookup:"+idLookup);
+                if (checkConflictEdit(sqlStartTS, sqlEndTS, datePickerValue, User.getUserId(), idLookup)){
 
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("Appointment Conflict");
-            alert.setContentText("This time conflicts with schedule for this user");
-            DurationChoiceBox.setValue(null);
-            StartTimeChoiceBox.setValue(null);
-            Optional<ButtonType> result = alert.showAndWait();
-            return false;
-        }
 
+                    String updateAppointment = "UPDATE appointment SET customerId = ?, userId = ?, title = ?, description = ?, location = ?,"
+                            + " contact = ?, type = ?, url = ?, start = ?, end = ?, lastUpdateBy = ? WHERE appointmentId = ?";
+                    PreparedStatement psAppointment;
+                    psAppointment = conn.prepareStatement(updateAppointment);
+                    psAppointment.setInt(1, queryCustomerId(customerName));
+                    psAppointment.setInt(2, User.getUserId());
+                    psAppointment.setString(3, MeetingTitleTextField.getText());
+                    psAppointment.setString(4, MeetingDescriptionTextField.getText());
+                    psAppointment.setString(5, BranchLocationLabel.getText());
+                    psAppointment.setString(6, contactTextBox.getText());
+                    psAppointment.setString(7, MeetingTypeChoiceBox.getValue());
+                    psAppointment.setString(8, UrlLabel.getText());
+                    psAppointment.setTimestamp(9, sqlStartTS);
+                    psAppointment.setTimestamp(10, sqlEndTS);
+                    psAppointment.setString(11, User.getUsername());
+                    psAppointment.setInt(12, idLookup);
+                    int rs = psAppointment.executeUpdate();
+                    return true;
+                }
+            } 
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("ERROR");
+        alert.setHeaderText("Appointment Conflict");
+        alert.setContentText("This time conflicts with schedule for this user");
+        DurationChoiceBox.setValue(null);
+        StartTimeChoiceBox.setValue(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        return false;
+            
     }
     
     // filter function 
